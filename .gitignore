@@ -1,2 +1,5 @@
-# OS X internals
+# OS X internals.
 .DS_Store
+
+# Build artifacts.
+cmd/app/app
