@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"net/http"
+
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -21,7 +23,15 @@ func newUsersRoutes(handler *gin.RouterGroup, log *logger.Logger, users usecase.
 	}
 }
 
-func (r *usersRoutes) doList(handler *gin.Context) {
+func (r *usersRoutes) doList(c *gin.Context) {
+	users, err := r.usersUseCase.List(c.Request.Context())
+	if err != nil {
+		writeErrorResponse(c, http.StatusInternalServerError, err)
+
+		return
+	}
+
+	c.JSON(http.StatusOK, dataResponse{Data: users})
 }
 
 func (r *usersRoutes) doRegister(handler *gin.Context) {
