@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/VetKA-org/vetka/internal/entity"
@@ -25,6 +26,14 @@ func (uc *UsersUseCase) List(ctx context.Context) ([]entity.User, error) {
 	return users, nil
 }
 
-func (uc *UsersUseCase) Register(ctx context.Context, username, password string) error {
+func (uc *UsersUseCase) Register(ctx context.Context, login, password string) error {
+	if err := uc.usersRepo.Register(ctx, login, password); err != nil {
+		if errors.Is(err, entity.ErrUserExists) {
+			return err
+		}
+
+		return fmt.Errorf("UsersUseCase - Register - uc.usersRepo.Register: %w", err)
+	}
+
 	return nil
 }

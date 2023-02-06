@@ -14,7 +14,7 @@ type Auth interface {
 
 type Users interface {
 	List(ctx context.Context) ([]entity.User, error)
-	Register(ctx context.Context, username, password string) error
+	Register(ctx context.Context, login, password string) error
 }
 
 type Patients interface {

@@ -35,7 +35,7 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	// Domain.
-	repos := repo.New(pg, rdb)
+	repos := repo.New(log, pg, rdb)
 	useCases := usecase.New(repos)
 
 	// HTTP Server.
