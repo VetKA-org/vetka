@@ -88,3 +88,25 @@ func (r *UsersRepo) Register(ctx context.Context, login, password string) error 
 
 	return nil
 }
+
+func (r *UsersRepo) Verify(ctx context.Context, login, password string) (entity.User, error) {
+	var user entity.User
+
+	err := r.Pool.
+		QueryRow(
+			ctx,
+			"SELECT id, login FROM users WHERE login=$1 AND password = crypt($2, password)",
+			login,
+			password,
+		).
+		Scan(&user.ID, &user.Login)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return entity.User{}, entity.ErrInvalidCredentials
+		}
+
+		return entity.User{}, fmt.Errorf("UsersRepo - Verify - r.Pool.QueryRow.Scan: %w", err)
+	}
+
+	return user, nil
+}

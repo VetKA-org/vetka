@@ -3,13 +3,14 @@ package usecase
 import (
 	"context"
 
+	"github.com/VetKA-org/vetka/internal/config"
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/repo"
 	uuid "github.com/satori/go.uuid"
 )
 
 type Auth interface {
-	Login(ctx context.Context, username, password string) error
+	Login(ctx context.Context, login, password string) (entity.JWTToken, error)
 }
 
 type Users interface {
@@ -45,10 +46,10 @@ type UseCases struct {
 	Queue        Queue
 }
 
-func New(repos *repo.Repositories) *UseCases {
+func New(cfg *config.Config, repos *repo.Repositories) *UseCases {
 	return &UseCases{
 		Appointments: NewAppointmentsUseCase(repos.Appointments),
-		Auth:         NewAuthUseCase(repos.Users),
+		Auth:         NewAuthUseCase(cfg.Secret, repos.Users),
 		Patients:     NewPatientsUseCase(repos.Patients, repos.Appointments),
 		Users:        NewUsersUseCase(repos.Users),
 		Queue:        NewQueueUseCase(repos.Queue),

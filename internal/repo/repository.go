@@ -16,6 +16,7 @@ type Patients interface{}
 type Users interface {
 	List(ctx context.Context) ([]entity.User, error)
 	Register(ctx context.Context, login, password string) error
+	Verify(ctx context.Context, login, password string) (entity.User, error)
 }
 
 type Queue interface{}

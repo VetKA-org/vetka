@@ -22,7 +22,7 @@ type Postgres struct {
 func New(url string, log *logger.Logger) (*Postgres, error) {
 	poolConfig, err := pgxpool.ParseConfig(url)
 	if err != nil {
-		return nil, fmt.Errorf("database - NewPostgres - pgxpool.ParseConfig: %w", err)
+		return nil, fmt.Errorf("database - Postgres.New - pgxpool.ParseConfig: %w", err)
 	}
 
 	pg := new(Postgres)
