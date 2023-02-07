@@ -3,3 +3,6 @@
 
 # Build artifacts.
 cmd/app/app
+
+# Draw.io backups.
+*.drawio.bkp
