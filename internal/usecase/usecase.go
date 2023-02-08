@@ -13,9 +13,13 @@ type Auth interface {
 	Login(ctx context.Context, login, password string) (entity.JWTToken, error)
 }
 
+type Roles interface {
+	List(ctx context.Context) ([]entity.Role, error)
+}
+
 type Users interface {
 	List(ctx context.Context) ([]entity.User, error)
-	Register(ctx context.Context, login, password string) error
+	Register(ctx context.Context, login, password string, roles []uuid.UUID) error
 }
 
 type Patients interface {
@@ -42,8 +46,9 @@ type UseCases struct {
 	Appointments Appointments
 	Auth         Auth
 	Patients     Patients
-	Users        Users
 	Queue        Queue
+	Roles        Roles
+	Users        Users
 }
 
 func New(cfg *config.Config, repos *repo.Repositories) *UseCases {
@@ -51,7 +56,8 @@ func New(cfg *config.Config, repos *repo.Repositories) *UseCases {
 		Appointments: NewAppointmentsUseCase(repos.Appointments),
 		Auth:         NewAuthUseCase(cfg.Secret, repos.Users),
 		Patients:     NewPatientsUseCase(repos.Patients, repos.Appointments),
-		Users:        NewUsersUseCase(repos.Users),
 		Queue:        NewQueueUseCase(repos.Queue),
+		Roles:        NewRolesUseCase(repos.Roles),
+		Users:        NewUsersUseCase(repos.Users, repos.Roles),
 	}
 }

@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/VetKA-org/vetka/internal/entity"
-	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/VetKA-org/vetka/pkg/postgres"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
@@ -15,12 +14,11 @@ import (
 )
 
 type UsersRepo struct {
-	log *logger.Logger
 	*postgres.Postgres
 }
 
-func NewUsersRepo(log *logger.Logger, pg *postgres.Postgres) *UsersRepo {
-	return &UsersRepo{log, pg}
+func NewUsersRepo(pg *postgres.Postgres) *UsersRepo {
+	return &UsersRepo{pg}
 }
 
 func (r *UsersRepo) List(ctx context.Context) ([]entity.User, error) {
@@ -49,44 +47,25 @@ func (r *UsersRepo) List(ctx context.Context) ([]entity.User, error) {
 	return rv, nil
 }
 
-func (r *UsersRepo) Register(ctx context.Context, login, password string) error {
-	conn, err := r.Pool.Acquire(ctx)
-	if err != nil {
-		return fmt.Errorf("UsersRepo - Register - r.Pool.Acquire: %w", err)
-	}
+func (r *UsersRepo) Register(ctx context.Context, tx postgres.Transaction, login, password string) (uuid.UUID, error) {
+	var id uuid.UUID
 
-	defer conn.Release()
-
-	tx, err := conn.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted, DeferrableMode: pgx.NotDeferrable})
-	if err != nil {
-		return fmt.Errorf("UsersRepo - Register - conn.BeginTx: %w", err)
-	}
-
-	defer func() {
-		if err := tx.Rollback(ctx); err != nil && !errors.Is(err, pgx.ErrTxClosed) {
-			r.log.Error().Err(err).Msg("UsersRepo - Register - conn.Rollback")
-		}
-	}()
-
-	if _, err := tx.Exec(
+	err := tx.Tx.QueryRow(
 		ctx,
-		"INSERT INTO users (login, password) VALUES ($1, crypt($2, gen_salt('bf', 8)))",
+		"INSERT INTO users (login, password) VALUES ($1, crypt($2, gen_salt('bf', 8))) RETURNING id",
 		login,
 		password,
-	); err != nil {
+	).Scan(&id)
+	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation {
-			return entity.ErrUserExists
+			return uuid.UUID{}, entity.ErrUserExists
 		}
 
-		return fmt.Errorf("UsersRepo - Register - tx.Exec: %w", err)
+		return uuid.UUID{}, fmt.Errorf("UsersRepo - Register - tx.Tx.Exec: %w", err)
 	}
 
-	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("UsersRepo - Register - tx.Commit: %w", err)
-	}
-
-	return nil
+	return id, nil
 }
 
 func (r *UsersRepo) Verify(ctx context.Context, login, password string) (entity.User, error) {

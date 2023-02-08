@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/VetKA-org/vetka/pkg/logger"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -17,15 +18,16 @@ const (
 
 type Postgres struct {
 	Pool *pgxpool.Pool
+	log  *logger.Logger
 }
 
 func New(url string, log *logger.Logger) (*Postgres, error) {
 	poolConfig, err := pgxpool.ParseConfig(url)
 	if err != nil {
-		return nil, fmt.Errorf("database - Postgres.New - pgxpool.ParseConfig: %w", err)
+		return nil, fmt.Errorf("Postgres - New - pgxpool.ParseConfig: %w", err)
 	}
 
-	pg := new(Postgres)
+	pg := &Postgres{log: log}
 	attempts := _defaultConnAttempts
 
 	for attempts > 0 {
@@ -41,7 +43,7 @@ func New(url string, log *logger.Logger) (*Postgres, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("database - NewPostgres - attempts == 0: %w", err)
+		return nil, fmt.Errorf("Postgres - New - attempts == 0: %w", err)
 	}
 
 	return pg, nil
@@ -51,4 +53,26 @@ func (p *Postgres) Close() {
 	if p.Pool != nil {
 		p.Pool.Close()
 	}
+}
+
+func (p *Postgres) BeginTx(ctx context.Context) (Transaction, error) {
+	conn, err := p.Pool.Acquire(ctx)
+	if err != nil {
+		return Transaction{}, fmt.Errorf("Postgres - BeginTx - r.Pool.Acquire: %w", err)
+	}
+
+	tx, err := conn.BeginTx(ctx, pgx.TxOptions{
+		IsoLevel: pgx.ReadCommitted,
+	})
+	if err != nil {
+		return Transaction{}, fmt.Errorf("Postgres - BeginTx - conn.BeginTx: %w", err)
+	}
+
+	return Transaction{tx, conn, p.log}, nil
+}
+
+func (p *Postgres) NewBatch() Batch {
+	pb := new(pgx.Batch)
+
+	return Batch{pb}
 }

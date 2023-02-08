@@ -8,6 +8,7 @@ import (
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 type usersRoutes struct {
@@ -16,8 +17,9 @@ type usersRoutes struct {
 }
 
 type doRegisterRequest struct {
-	Login    string `json:"login" binding:"required,lte=128"`
-	Password string `json:"password" binding:"required"`
+	Login    string      `json:"login" binding:"required,lte=128"`
+	Password string      `json:"password" binding:"required"`
+	Roles    []uuid.UUID `json:"roles" binding:"required"`
 }
 
 func newUsersRoutes(handler *gin.RouterGroup, log *logger.Logger, users usecase.Users) {
@@ -50,7 +52,7 @@ func (r *usersRoutes) doRegister(c *gin.Context) {
 		return
 	}
 
-	if err := r.usersUseCase.Register(c.Request.Context(), req.Login, req.Password); err != nil {
+	if err := r.usersUseCase.Register(c.Request.Context(), req.Login, req.Password, req.Roles); err != nil {
 		if errors.Is(err, entity.ErrUserExists) {
 			writeErrorResponse(c, http.StatusConflict, err)
 
