@@ -2,14 +2,11 @@ package repo
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/pkg/postgres"
-	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgconn"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -57,8 +54,7 @@ func (r *UsersRepo) Register(ctx context.Context, tx postgres.Transaction, login
 		password,
 	).Scan(&id)
 	if err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation {
+		if postgres.IsEntityExists(err) {
 			return uuid.UUID{}, entity.ErrUserExists
 		}
 
@@ -80,7 +76,7 @@ func (r *UsersRepo) Verify(ctx context.Context, login, password string) (entity.
 		).
 		Scan(&user.ID, &user.Login)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
+		if postgres.IsEmptyResponse(err) {
 			return entity.User{}, entity.ErrInvalidCredentials
 		}
 
