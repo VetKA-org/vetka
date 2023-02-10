@@ -6,7 +6,6 @@ import (
 
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/pkg/postgres"
-	"github.com/jackc/pgx/v5"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -19,26 +18,9 @@ func NewRolesRepo(pg *postgres.Postgres) *RolesRepo {
 }
 
 func (r *RolesRepo) List(ctx context.Context) ([]entity.Role, error) {
-	rows, err := r.Pool.Query(ctx, "SELECT id, name FROM roles")
-	if err != nil {
-		return nil, fmt.Errorf("RolesRepo - List - r.Pool.Query: %w", err)
-	}
-	defer rows.Close()
-
-	var (
-		id   uuid.UUID
-		name string
-	)
-
 	rv := make([]entity.Role, 0)
-	_, err = pgx.ForEachRow(rows, []any{&id, &name}, func() error {
-		rv = append(rv, entity.Role{ID: id, Name: name})
-
-		return nil
-	})
-
-	if err != nil {
-		return nil, fmt.Errorf("RolesRepo - List - r.Pool.ForEachRow: %w", err)
+	if err := r.Select(ctx, &rv, "SELECT id, name FROM roles"); err != nil {
+		return nil, fmt.Errorf("RolesRepo - List - r.Select: %w", err)
 	}
 
 	return rv, nil
