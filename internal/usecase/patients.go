@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/repo"
@@ -18,7 +19,12 @@ func NewPatientsUseCase(patients repo.Patients, appointments repo.Appointments) 
 }
 
 func (uc *PatientsUseCase) List(ctx context.Context) ([]entity.Patient, error) {
-	return nil, nil
+	patients, err := uc.patientsRepo.List(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("PatientsUseCase - List - uc.patientsRepo.List: %w", err)
+	}
+
+	return patients, nil
 }
 
 func (uc *PatientsUseCase) Register(ctx context.Context) error {

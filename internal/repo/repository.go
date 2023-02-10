@@ -16,6 +16,8 @@ type Appointments interface {
 
 type Patients interface {
 	BeginTx(ctx context.Context) (postgres.Transaction, error)
+
+	List(ctx context.Context) ([]entity.Patient, error)
 }
 
 type Users interface {

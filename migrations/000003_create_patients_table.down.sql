@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS patients;
+DROP TABLE IF EXISTS animal_species;
+
+DROP TYPE IF EXISTS gender;

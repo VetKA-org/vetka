@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/VetKA-org/vetka/pkg/logger"
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -75,4 +76,13 @@ func (p *Postgres) NewBatch() Batch {
 	pb := new(pgx.Batch)
 
 	return Batch{pb}
+}
+
+func (p *Postgres) Select(
+	ctx context.Context,
+	dst interface{},
+	query string,
+	args ...interface{},
+) error {
+	return pgxscan.Select(ctx, p.Pool, dst, query, args...)
 }
