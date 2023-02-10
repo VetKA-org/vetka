@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX uk_users_login ON users (login);
 
 INSERT INTO users (login, password) VALUES (
-  'head',
-  crypt('1q2w3e', gen_salt('bf', 8))
+    'head',
+    crypt('1q2w3e', gen_salt('bf', 8))
 ) ON CONFLICT (login) DO NOTHING;
