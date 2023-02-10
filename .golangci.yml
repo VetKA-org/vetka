@@ -42,6 +42,8 @@ linters-settings:
           - return
   govet:
     check-shadowing: true
+  lll:
+    line-length: 100
   misspell:
     locale: US
   nestif:

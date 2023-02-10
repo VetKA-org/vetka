@@ -52,7 +52,8 @@ func (r *usersRoutes) doRegister(c *gin.Context) {
 		return
 	}
 
-	if err := r.usersUseCase.Register(c.Request.Context(), req.Login, req.Password, req.Roles); err != nil {
+	err := r.usersUseCase.Register(c.Request.Context(), req.Login, req.Password, req.Roles)
+	if err != nil {
 		if errors.Is(err, entity.ErrUserExists) {
 			writeErrorResponse(c, http.StatusConflict, err)
 

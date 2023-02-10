@@ -44,7 +44,12 @@ func (r *RolesRepo) List(ctx context.Context) ([]entity.Role, error) {
 	return rv, nil
 }
 
-func (r *RolesRepo) Assign(ctx context.Context, tx postgres.Transaction, userID uuid.UUID, roles []uuid.UUID) error {
+func (r *RolesRepo) Assign(
+	ctx context.Context,
+	tx postgres.Transaction,
+	userID uuid.UUID,
+	roles []uuid.UUID,
+) error {
 	batch := r.NewBatch()
 
 	for _, roleID := range roles {

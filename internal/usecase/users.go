@@ -28,7 +28,11 @@ func (uc *UsersUseCase) List(ctx context.Context) ([]entity.User, error) {
 	return users, nil
 }
 
-func (uc *UsersUseCase) Register(ctx context.Context, login, password string, roles []uuid.UUID) error {
+func (uc *UsersUseCase) Register(
+	ctx context.Context,
+	login, password string,
+	roles []uuid.UUID,
+) error {
 	tx, err := uc.usersRepo.BeginTx(ctx)
 	if err != nil {
 		return fmt.Errorf("UsersUseCase - Register - uc.usersRepo.Pool.BeginTx: %w", err)

@@ -11,7 +11,11 @@ type appointmentsRoutes struct {
 	appointmentsUseCase usecase.Appointments
 }
 
-func newAppointmentsRoutes(handler *gin.RouterGroup, log *logger.Logger, appointments usecase.Appointments) {
+func newAppointmentsRoutes(
+	handler *gin.RouterGroup,
+	log *logger.Logger,
+	appointments usecase.Appointments,
+) {
 	r := &appointmentsRoutes{log, appointments}
 
 	h := handler.Group("/appointments")

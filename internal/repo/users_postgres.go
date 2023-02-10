@@ -44,7 +44,11 @@ func (r *UsersRepo) List(ctx context.Context) ([]entity.User, error) {
 	return rv, nil
 }
 
-func (r *UsersRepo) Register(ctx context.Context, tx postgres.Transaction, login, password string) (uuid.UUID, error) {
+func (r *UsersRepo) Register(
+	ctx context.Context,
+	tx postgres.Transaction,
+	login, password string,
+) (uuid.UUID, error) {
 	var id uuid.UUID
 
 	err := tx.Tx.QueryRow(
