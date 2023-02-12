@@ -6,22 +6,10 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type Species string
-
-const (
-	Amphibian    = Species("amphibian")
-	Bird         = Species("bird")
-	Cat          = Species("cat")
-	Dog          = Species("dog")
-	ExoticAnimal = Species("exotic")
-	Reptile      = Species("reptile")
-	Rodent       = Species("rodent")
-)
-
 type Patient struct {
-	ID           uuid.UUID  `json:"id"`
+	ID           uuid.UUID  `json:"id" db:"patient_id"`
 	Name         string     `json:"name"`
-	Species      Species    `json:"species"`
+	Species      string     `json:"species" db:"title"`
 	Gender       Gender     `json:"gender"`
 	Breed        *string    `json:"breed"`
 	Birth        time.Time  `json:"birth"`

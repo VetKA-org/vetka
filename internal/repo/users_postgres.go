@@ -19,7 +19,7 @@ func NewUsersRepo(pg *postgres.Postgres) *UsersRepo {
 
 func (r *UsersRepo) List(ctx context.Context) ([]entity.User, error) {
 	rv := make([]entity.User, 0)
-	if err := r.Select(ctx, &rv, "SELECT id, login FROM users"); err != nil {
+	if err := r.Select(ctx, &rv, "SELECT user_id, login FROM users"); err != nil {
 		return nil, fmt.Errorf("UsersRepo - List - r.Select: %w", err)
 	}
 
@@ -35,7 +35,7 @@ func (r *UsersRepo) Register(
 
 	err := tx.Tx.QueryRow(
 		ctx,
-		"INSERT INTO users (login, password) VALUES ($1, crypt($2, gen_salt('bf', 8))) RETURNING id",
+		"INSERT INTO users (login, password) VALUES ($1, crypt($2, gen_salt('bf', 8))) RETURNING user_id",
 		login,
 		password,
 	).Scan(&id)
@@ -56,7 +56,7 @@ func (r *UsersRepo) Verify(ctx context.Context, login, password string) (entity.
 	err := r.Pool.
 		QueryRow(
 			ctx,
-			"SELECT id, login FROM users WHERE login=$1 AND password = crypt($2, password)",
+			"SELECT user_id, login FROM users WHERE login=$1 AND password = crypt($2, password)",
 			login,
 			password,
 		).

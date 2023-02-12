@@ -19,7 +19,7 @@ func NewRolesRepo(pg *postgres.Postgres) *RolesRepo {
 
 func (r *RolesRepo) List(ctx context.Context) ([]entity.Role, error) {
 	rv := make([]entity.Role, 0)
-	if err := r.Select(ctx, &rv, "SELECT id, name FROM roles"); err != nil {
+	if err := r.Select(ctx, &rv, "SELECT role_id, name FROM roles"); err != nil {
 		return nil, fmt.Errorf("RolesRepo - List - r.Select: %w", err)
 	}
 

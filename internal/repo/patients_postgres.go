@@ -22,17 +22,19 @@ func (r *PatientsRepo) List(ctx context.Context) ([]entity.Patient, error) {
 		ctx,
 		&rv,
 		`SELECT
-         p.id,
-         p.name,
-         s.name as species,
-         p.gender,
-         p.breed,
-         p.aggressive,
-         p.vaccinated_at,
-         p.sterilized_at
+         patient_id,
+         name,
+         a.title,
+         gender,
+         breed,
+         aggressive,
+         vaccinated_at,
+         sterilized_at
      FROM
-         patients as p
-     LEFT OUTER JOIN animal_species as s ON (p.species = s.id)`,
+         patients
+     INNER JOIN
+         animal_species AS a
+     USING(species_id)`,
 	); err != nil {
 		return nil, fmt.Errorf("PatientsRepo - List - r.Select: %w", err)
 	}

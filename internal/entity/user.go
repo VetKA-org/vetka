@@ -12,7 +12,7 @@ var (
 )
 
 type User struct {
-	ID       uuid.UUID `json:"id"`
+	ID       uuid.UUID `json:"id" db:"user_id"`
 	Login    string    `json:"login"`
 	Password string    `json:"-"`
 }
