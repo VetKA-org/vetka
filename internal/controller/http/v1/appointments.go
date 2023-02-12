@@ -39,7 +39,20 @@ func newAppointmentsRoutes(
 }
 
 func (r *appointmentsRoutes) doList(c *gin.Context) {
-	appointments, err := r.appointmentsUseCase.List(c.Request.Context())
+	var patientID *uuid.UUID
+
+	if value, ok := c.GetQuery("patient_id"); ok {
+		patientUUID, err := uuid.FromString(value)
+		if err != nil {
+			writeErrorResponse(c, http.StatusBadRequest, err)
+
+			return
+		}
+
+		patientID = &patientUUID
+	}
+
+	appointments, err := r.appointmentsUseCase.List(c.Request.Context(), patientID)
 	if err != nil {
 		writeErrorResponse(c, http.StatusInternalServerError, err)
 

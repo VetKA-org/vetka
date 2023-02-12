@@ -36,11 +36,10 @@ type Patients interface {
 		vaccinatedAt *time.Time,
 		sterilizedAt *time.Time,
 	) error
-	ListAppointments(ctx context.CancelFunc, id uuid.UUID) error
 }
 
 type Appointments interface {
-	List(ctx context.Context) ([]entity.Appointment, error)
+	List(ctx context.Context, patientID *uuid.UUID) ([]entity.Appointment, error)
 	Create(
 		ctx context.Context,
 		patientID uuid.UUID,
@@ -73,7 +72,7 @@ func New(cfg *config.Config, repos *repo.Repositories) *UseCases {
 	return &UseCases{
 		Appointments: NewAppointmentsUseCase(repos.Appointments),
 		Auth:         NewAuthUseCase(cfg.Secret, repos.Users, repos.Roles),
-		Patients:     NewPatientsUseCase(repos.Patients, repos.Appointments),
+		Patients:     NewPatientsUseCase(repos.Patients),
 		Queue:        NewQueueUseCase(repos.Queue),
 		Roles:        NewRolesUseCase(repos.Roles),
 		Users:        NewUsersUseCase(repos.Users, repos.Roles),

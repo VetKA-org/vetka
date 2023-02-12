@@ -91,10 +91,9 @@
 
 - `GET /api/v1/patients` - получение списка пациентов;
 - `POST /api/v1/patients` - регистрация нового пациента;
-- `GET /api/v1/patients/id:uuid/appointments` - получение полного списка приемов пациента, включая отмененные;
 
 - `POST /api/v1/appointments` - создание новой записи на прием;
-- `GET /api/v1/appointments` - получение списка записей;
+- `GET /api/v1/appointments` - получение списка записей c фильтрацией по пациенту;
 - `PATCH /api/v1/appointments/id:uuid` - открытие, закрытие, отмена записи на прием;
 
 - `GET /api/v1/queue` - получения списка приемов в очереди;

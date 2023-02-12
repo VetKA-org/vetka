@@ -37,7 +37,6 @@ func newPatientsRoutes(handler *gin.RouterGroup, log *logger.Logger, patients us
 	{
 		h.GET("/", r.doList)
 		h.POST("/", r.doRegister)
-		h.GET("/:id/appointments", r.doListAppointments)
 	}
 }
 
@@ -85,7 +84,4 @@ func (r *patientsRoutes) doRegister(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
-}
-
-func (r *patientsRoutes) doListAppointments(c *gin.Context) {
 }

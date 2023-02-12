@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/VetKA-org/vetka/internal/entity"
@@ -18,9 +19,21 @@ func NewAppointmentsRepo(pg *postgres.Postgres) *AppointmentsRepo {
 	return &AppointmentsRepo{pg}
 }
 
-func (r *AppointmentsRepo) List(ctx context.Context) ([]entity.Appointment, error) {
+func (r *AppointmentsRepo) List(
+	ctx context.Context,
+	patientID *uuid.UUID,
+) ([]entity.Appointment, error) {
+	var values []interface{}
+
+	query := "SELECT * FROM appointments"
+
+	if patientID != nil {
+		values = append(values, patientID)
+		query += " WHERE patient_id = $" + strconv.Itoa(len(values))
+	}
+
 	rv := make([]entity.Appointment, 0)
-	if err := r.Select(ctx, &rv, "SELECT * FROM appointments"); err != nil {
+	if err := r.Select(ctx, &rv, query, values...); err != nil {
 		return nil, fmt.Errorf("AppointmentsRepo - List - r.Select: %w", err)
 	}
 

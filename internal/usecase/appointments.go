@@ -18,8 +18,11 @@ func NewAppointmentsUseCase(appointments repo.Appointments) *AppointmentsUseCase
 	return &AppointmentsUseCase{appointments}
 }
 
-func (uc *AppointmentsUseCase) List(ctx context.Context) ([]entity.Appointment, error) {
-	appointments, err := uc.appointmentsRepo.List(ctx)
+func (uc *AppointmentsUseCase) List(
+	ctx context.Context,
+	patientID *uuid.UUID,
+) ([]entity.Appointment, error) {
+	appointments, err := uc.appointmentsRepo.List(ctx, patientID)
 	if err != nil {
 		return nil, fmt.Errorf("AppointmentsUseCase - List - uc.appointmentsRepo.List: %w", err)
 	}

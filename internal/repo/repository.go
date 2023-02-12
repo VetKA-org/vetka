@@ -14,7 +14,7 @@ import (
 type Appointments interface {
 	BeginTx(ctx context.Context) (postgres.Transaction, error)
 
-	List(ctx context.Context) ([]entity.Appointment, error)
+	List(ctx context.Context, patientID *uuid.UUID) ([]entity.Appointment, error)
 	Create(
 		ctx context.Context,
 		tx postgres.Transaction,

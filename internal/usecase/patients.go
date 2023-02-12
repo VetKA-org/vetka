@@ -11,12 +11,11 @@ import (
 )
 
 type PatientsUseCase struct {
-	patientsRepo     repo.Patients
-	appointmentsRepo repo.Appointments
+	patientsRepo repo.Patients
 }
 
-func NewPatientsUseCase(patients repo.Patients, appointments repo.Appointments) *PatientsUseCase {
-	return &PatientsUseCase{patients, appointments}
+func NewPatientsUseCase(patients repo.Patients) *PatientsUseCase {
+	return &PatientsUseCase{patients}
 }
 
 func (uc *PatientsUseCase) List(ctx context.Context) ([]entity.Patient, error) {
@@ -65,9 +64,5 @@ func (uc *PatientsUseCase) Register(
 		return fmt.Errorf("PatientsUseCase - Register - tx.Commit: %w", err)
 	}
 
-	return nil
-}
-
-func (uc *PatientsUseCase) ListAppointments(ctx context.CancelFunc, id uuid.UUID) error {
 	return nil
 }
