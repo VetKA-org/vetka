@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/repo"
@@ -27,7 +28,43 @@ func (uc *PatientsUseCase) List(ctx context.Context) ([]entity.Patient, error) {
 	return patients, nil
 }
 
-func (uc *PatientsUseCase) Register(ctx context.Context) error {
+func (uc *PatientsUseCase) Register(
+	ctx context.Context,
+	name string,
+	speciesID uuid.UUID,
+	gender entity.Gender,
+	breed string,
+	birth time.Time,
+	aggressive bool,
+	vaccinatedAt *time.Time,
+	sterilizedAt *time.Time,
+) error {
+	tx, err := uc.patientsRepo.BeginTx(ctx)
+	if err != nil {
+		return fmt.Errorf("PatientsUseCase - Register - uc.patientsRepo.BeginTx: %w", err)
+	}
+
+	defer tx.Release()
+
+	if err := uc.patientsRepo.Register(
+		ctx,
+		tx,
+		name,
+		speciesID,
+		gender,
+		breed,
+		birth,
+		aggressive,
+		vaccinatedAt,
+		sterilizedAt,
+	); err != nil {
+		return fmt.Errorf("PatientsUseCase - Register - uc.patientsRepo.Register: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("PatientsUseCase - Register - tx.Commit: %w", err)
+	}
+
 	return nil
 }
 

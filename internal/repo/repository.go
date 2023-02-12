@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"time"
 
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
@@ -18,6 +19,18 @@ type Patients interface {
 	BeginTx(ctx context.Context) (postgres.Transaction, error)
 
 	List(ctx context.Context) ([]entity.Patient, error)
+	Register(
+		ctx context.Context,
+		tx postgres.Transaction,
+		name string,
+		speciesID uuid.UUID,
+		gender entity.Gender,
+		breed string,
+		birth time.Time,
+		aggressive bool,
+		vaccinatedAt *time.Time,
+		sterilizedAt *time.Time,
+	) error
 }
 
 type Users interface {

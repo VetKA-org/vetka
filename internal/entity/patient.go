@@ -1,15 +1,21 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
 )
 
+var (
+	ErrPatientExists  = errors.New("patient already exists")
+	ErrUnknownSpecies = errors.New("species not found")
+)
+
 type Patient struct {
 	ID           uuid.UUID  `json:"id" db:"patient_id"`
 	Name         string     `json:"name"`
-	Species      string     `json:"species" db:"title"`
+	SpeciesID    uuid.UUID  `json:"species_id"`
 	Gender       Gender     `json:"gender"`
 	Breed        *string    `json:"breed"`
 	Birth        time.Time  `json:"birth"`

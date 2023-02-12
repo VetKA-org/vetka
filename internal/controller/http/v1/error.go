@@ -32,8 +32,17 @@ func getErrorMsg(fe validator.FieldError) string {
 	case "max":
 		return "Must be shorter than " + fe.Param() + " character(s)"
 
+	case "ltefield":
+		return "Must be less than " + fe.Param()
+
+	case "gtefield":
+		return "Must be greater than " + fe.Param()
+
+	case "oneof":
+		return "Must be one of: " + fe.Param()
+
 	default:
-		return "Unknown error"
+		return "Unknown error: " + fe.Tag() + "(" + fe.Param() + ")"
 	}
 }
 

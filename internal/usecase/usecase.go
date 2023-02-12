@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"github.com/VetKA-org/vetka/internal/config"
 	"github.com/VetKA-org/vetka/internal/entity"
@@ -24,7 +25,17 @@ type Users interface {
 
 type Patients interface {
 	List(ctx context.Context) ([]entity.Patient, error)
-	Register(ctx context.Context) error
+	Register(
+		ctx context.Context,
+		name string,
+		speciesID uuid.UUID,
+		gender entity.Gender,
+		breed string,
+		birth time.Time,
+		aggressive bool,
+		vaccinatedAt *time.Time,
+		sterilizedAt *time.Time,
+	) error
 	ListAppointments(ctx context.CancelFunc, id uuid.UUID) error
 }
 

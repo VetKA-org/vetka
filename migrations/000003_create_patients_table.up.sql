@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS patients (
     name          varchar(32) not null,
     species_id    uuid REFERENCES animal_species(species_id),
     gender        gender not null,
-    breed         varchar(64),
+    breed         varchar(64) not null,
     birth         date not null,
     aggressive    boolean not null DEFAULT false,
     vaccinated_at date,

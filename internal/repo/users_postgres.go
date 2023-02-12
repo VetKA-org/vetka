@@ -44,7 +44,7 @@ func (r *UsersRepo) Register(
 			return uuid.UUID{}, entity.ErrUserExists
 		}
 
-		return uuid.UUID{}, fmt.Errorf("UsersRepo - Register - tx.Tx.Exec: %w", err)
+		return uuid.UUID{}, fmt.Errorf("UsersRepo - Register - tx.Tx.QueryRow.Scan: %w", err)
 	}
 
 	return id, nil
