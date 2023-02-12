@@ -16,8 +16,8 @@ type usersRoutes struct {
 	usersUseCase usecase.Users
 }
 
-type doRegisterRequest struct {
-	Login    string      `json:"login" binding:"required,lte=128"`
+type doRegisterUserRequest struct {
+	Login    string      `json:"login" binding:"required,max=128"`
 	Password string      `json:"password" binding:"required"`
 	Roles    []uuid.UUID `json:"roles" binding:"required"`
 }
@@ -44,7 +44,7 @@ func (r *usersRoutes) doList(c *gin.Context) {
 }
 
 func (r *usersRoutes) doRegister(c *gin.Context) {
-	var req doRegisterRequest
+	var req doRegisterUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		writeBindErrorResponse(c, err)
@@ -55,7 +55,7 @@ func (r *usersRoutes) doRegister(c *gin.Context) {
 	err := r.usersUseCase.Register(c.Request.Context(), req.Login, req.Password, req.Roles)
 	if err != nil {
 		if errors.Is(err, entity.ErrUserExists) {
-			writeErrorResponse(c, http.StatusConflict, err)
+			writeErrorResponse(c, http.StatusConflict, entity.ErrUserExists)
 
 			return
 		}

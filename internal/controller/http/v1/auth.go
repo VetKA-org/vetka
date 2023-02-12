@@ -41,7 +41,7 @@ func (r *authRoutes) doLogin(c *gin.Context) {
 	token, err := r.authUseCase.Login(c.Request.Context(), req.Login, req.Password)
 	if err != nil {
 		if errors.Is(err, entity.ErrInvalidCredentials) {
-			writeErrorResponse(c, http.StatusUnauthorized, err)
+			writeErrorResponse(c, http.StatusUnauthorized, entity.ErrInvalidCredentials)
 
 			return
 		}

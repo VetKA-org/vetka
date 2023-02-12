@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/VetKA-org/vetka/internal/entity"
@@ -35,15 +34,11 @@ func (uc *UsersUseCase) Register(
 ) error {
 	tx, err := uc.usersRepo.BeginTx(ctx)
 	if err != nil {
-		return fmt.Errorf("UsersUseCase - Register - uc.usersRepo.Pool.BeginTx: %w", err)
+		return fmt.Errorf("UsersUseCase - Register - uc.usersRepo.BeginTx: %w", err)
 	}
 
 	userID, err := uc.usersRepo.Register(ctx, tx, login, password)
 	if err != nil {
-		if errors.Is(err, entity.ErrUserExists) {
-			return err
-		}
-
 		return fmt.Errorf("UsersUseCase - Register - uc.usersRepo.Register: %w", err)
 	}
 
@@ -53,5 +48,9 @@ func (uc *UsersUseCase) Register(
 		}
 	}
 
-	return tx.Commit(ctx)
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("UsersUseCase - Register - tx.Commit: %w", err)
+	}
+
+	return nil
 }

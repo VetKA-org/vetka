@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -25,10 +24,6 @@ func NewAuthUseCase(secret string, users repo.Users, roles repo.Roles) *AuthUseC
 func (uc *AuthUseCase) Login(ctx context.Context, login, password string) (entity.JWTToken, error) {
 	user, err := uc.usersRepo.Verify(ctx, login, password)
 	if err != nil {
-		if errors.Is(err, entity.ErrInvalidCredentials) {
-			return "", err
-		}
-
 		return "", fmt.Errorf("AuthUseCase - Login - uc.usersRepo.Verify: %w", err)
 	}
 
