@@ -53,3 +53,29 @@ func (r *RolesRepo) Assign(
 
 	return nil
 }
+
+func (r *RolesRepo) Get(ctx context.Context, userID uuid.UUID) ([]entity.Role, error) {
+	rv := make([]entity.Role, 0)
+	if err := r.Select(
+		ctx,
+		&rv,
+		`SELECT
+         role_id, name
+     FROM (
+     SELECT
+             role_id
+         FROM
+             users_roles
+         WHERE
+             user_id = $1
+     ) AS r
+     INNER JOIN
+         roles
+     USING (role_id)`,
+		userID,
+	); err != nil {
+		return nil, fmt.Errorf("RolesRepo - List - r.Select: %w", err)
+	}
+
+	return rv, nil
+}

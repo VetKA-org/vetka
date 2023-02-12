@@ -15,10 +15,11 @@ const _defaultTokenLifeTime = 15 * time.Minute
 type AuthUseCase struct {
 	secret    string
 	usersRepo repo.Users
+	rolesRepo repo.Roles
 }
 
-func NewAuthUseCase(secret string, users repo.Users) *AuthUseCase {
-	return &AuthUseCase{secret, users}
+func NewAuthUseCase(secret string, users repo.Users, roles repo.Roles) *AuthUseCase {
+	return &AuthUseCase{secret, users, roles}
 }
 
 func (uc *AuthUseCase) Login(ctx context.Context, login, password string) (entity.JWTToken, error) {
@@ -31,7 +32,12 @@ func (uc *AuthUseCase) Login(ctx context.Context, login, password string) (entit
 		return "", fmt.Errorf("AuthUseCase - Login - uc.usersRepo.Verify: %w", err)
 	}
 
-	token, err := entity.NewJWTToken(user, uc.secret, _defaultTokenLifeTime)
+	roles, err := uc.rolesRepo.Get(ctx, user.ID)
+	if err != nil {
+		return "", fmt.Errorf("AuthUseCase - Login - uc.rolesRepo.Get: %w", err)
+	}
+
+	token, err := entity.NewJWTToken(user, roles, uc.secret, _defaultTokenLifeTime)
 	if err != nil {
 		return "", fmt.Errorf("AuthUseCase - Login - entity.NewJWTToken: %w", err)
 	}

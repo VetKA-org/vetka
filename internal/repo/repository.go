@@ -33,6 +33,7 @@ type Roles interface {
 
 	List(ctx context.Context) ([]entity.Role, error)
 	Assign(ctx context.Context, tx postgres.Transaction, userID uuid.UUID, roles []uuid.UUID) error
+	Get(ctx context.Context, userID uuid.UUID) ([]entity.Role, error)
 }
 
 type Queue interface{}

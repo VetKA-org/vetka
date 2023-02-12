@@ -54,7 +54,7 @@ type UseCases struct {
 func New(cfg *config.Config, repos *repo.Repositories) *UseCases {
 	return &UseCases{
 		Appointments: NewAppointmentsUseCase(repos.Appointments),
-		Auth:         NewAuthUseCase(cfg.Secret, repos.Users),
+		Auth:         NewAuthUseCase(cfg.Secret, repos.Users, repos.Roles),
 		Patients:     NewPatientsUseCase(repos.Patients, repos.Appointments),
 		Queue:        NewQueueUseCase(repos.Queue),
 		Roles:        NewRolesUseCase(repos.Roles),

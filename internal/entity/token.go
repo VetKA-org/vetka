@@ -11,8 +11,13 @@ import (
 type JWTToken string
 
 // Issue new token using HS256 signing method.
-func NewJWTToken(user User, secret string, duration time.Duration) (JWTToken, error) {
+func NewJWTToken(user User, roles []Role, secret string, duration time.Duration) (JWTToken, error) {
 	now := time.Now()
+
+	assignedRoles := make([]string, len(roles))
+	for i, role := range roles {
+		assignedRoles[i] = role.Name
+	}
 
 	claims := jwt.MapClaims{}
 
@@ -25,6 +30,7 @@ func NewJWTToken(user User, secret string, duration time.Duration) (JWTToken, er
 	// User info
 	claims["sub"] = user.ID
 	claims["login"] = user.Login
+	claims["roles"] = assignedRoles
 
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
