@@ -37,6 +37,8 @@ func (uc *UsersUseCase) Register(
 		return fmt.Errorf("UsersUseCase - Register - uc.usersRepo.BeginTx: %w", err)
 	}
 
+	defer tx.Release()
+
 	userID, err := uc.usersRepo.Register(ctx, tx, login, password)
 	if err != nil {
 		return fmt.Errorf("UsersUseCase - Register - uc.usersRepo.Register: %w", err)

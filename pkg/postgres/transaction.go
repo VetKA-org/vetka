@@ -15,9 +15,11 @@ type Transaction struct {
 	log  *logger.Logger
 }
 
-func (t Transaction) Commit(ctx context.Context) error {
-	defer t.conn.Release()
+func (t Transaction) Release() {
+	t.conn.Release()
+}
 
+func (t Transaction) Commit(ctx context.Context) error {
 	defer func() {
 		if err := t.Tx.Rollback(ctx); err != nil && !errors.Is(err, pgx.ErrTxClosed) {
 			t.log.Error().Err(err).Msg("Transaction - Commit - t.Tx.Rollback")
