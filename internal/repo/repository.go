@@ -13,6 +13,17 @@ import (
 
 type Appointments interface {
 	BeginTx(ctx context.Context) (postgres.Transaction, error)
+
+	List(ctx context.Context) ([]entity.Appointment, error)
+	Create(
+		ctx context.Context,
+		tx postgres.Transaction,
+		patientID uuid.UUID,
+		assigneeID uuid.UUID,
+		scheduledFor time.Time,
+		reason string,
+		details *string,
+	) error
 }
 
 type Patients interface {

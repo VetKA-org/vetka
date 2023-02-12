@@ -62,8 +62,7 @@ linters:
     - cyclop
     - depguard
     - dogsled
-# FIXME (alkurbatov): Enable when we add some meat to service skeleton.
-#    - dupl
+    - dupl
     - durationcheck
     - errcheck
     - errchkjson

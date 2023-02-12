@@ -41,7 +41,14 @@ type Patients interface {
 
 type Appointments interface {
 	List(ctx context.Context) ([]entity.Appointment, error)
-	Create(ctx context.Context) error
+	Create(
+		ctx context.Context,
+		patientID uuid.UUID,
+		assigneeID uuid.UUID,
+		scheduledFor time.Time,
+		reason string,
+		details *string,
+	) error
 	Update(ctx context.Context, id uuid.UUID) error
 }
 
