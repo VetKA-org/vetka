@@ -60,6 +60,10 @@ type Roles interface {
 	Get(ctx context.Context, userID uuid.UUID) ([]entity.Role, error)
 }
 
+type Species interface {
+	List(ctx context.Context) ([]entity.Species, error)
+}
+
 type Queue interface{}
 
 type Repositories struct {
@@ -67,6 +71,7 @@ type Repositories struct {
 	Patients     Patients
 	Users        Users
 	Roles        Roles
+	Species      Species
 	Queue        Queue
 }
 
@@ -76,6 +81,7 @@ func New(log *logger.Logger, pg *postgres.Postgres, rdb *redis.Redis) *Repositor
 		Patients:     NewPatientsRepo(pg),
 		Users:        NewUsersRepo(pg),
 		Roles:        NewRolesRepo(pg),
+		Species:      NewSpeciesRepo(pg),
 		Queue:        NewQueueRepo(rdb),
 	}
 }

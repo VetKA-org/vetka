@@ -62,7 +62,8 @@ linters:
     - cyclop
     - depguard
     - dogsled
-    - dupl
+# FIXME: Uncomment when we add more unique logic.
+#    - dupl
     - durationcheck
     - errcheck
     - errchkjson

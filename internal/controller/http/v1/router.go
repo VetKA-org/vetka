@@ -19,6 +19,7 @@ func NewRouter(handler *gin.Engine, log *logger.Logger, useCases *usecase.UseCas
 		newPatientsRoutes(h, log, useCases.Patients)
 		newQueueRoutes(h, log, useCases.Queue)
 		newRolesRoutes(h, log, useCases.Roles)
+		newSpeciesRoutes(h, log, useCases.Species)
 		newUsersRoutes(h, log, useCases.Users)
 	}
 }
