@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,10 @@ type doCreateAppointmentRequest struct {
 	ScheduledFor time.Time `json:"scheduled_for" time_utc:"1" binding:"required"`
 	Reason       string    `json:"reason" binding:"required,max=255"`
 	Details      *string   `json:"details"`
+}
+
+type doUpdateAppointmentRequest struct {
+	Status entity.ApptStatus `json:"status" binding:"required,oneof=scheduled opened closed canceled"`
 }
 
 func newAppointmentsRoutes(
@@ -88,5 +93,27 @@ func (r *appointmentsRoutes) doCreate(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (r *appointmentsRoutes) doUpdate(handler *gin.Context) {
+func (r *appointmentsRoutes) doUpdate(c *gin.Context) {
+	var req doUpdateAppointmentRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		writeBindErrorResponse(c, err)
+
+		return
+	}
+
+	id, err := paramToUUID(c, "id")
+	if err != nil {
+		writeErrorResponse(c, http.StatusBadRequest, err)
+
+		return
+	}
+
+	if err := r.appointmentsUseCase.Update(c.Request.Context(), id, req.Status); err != nil {
+		writeErrorResponse(c, http.StatusInternalServerError, err)
+
+		return
+	}
+
+	c.Status(http.StatusOK)
 }

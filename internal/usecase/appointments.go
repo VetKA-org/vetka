@@ -64,6 +64,25 @@ func (uc *AppointmentsUseCase) Create(
 	return nil
 }
 
-func (uc *AppointmentsUseCase) Update(ctx context.Context, id uuid.UUID) error {
+func (uc *AppointmentsUseCase) Update(
+	ctx context.Context,
+	id uuid.UUID,
+	status entity.ApptStatus,
+) error {
+	tx, err := uc.appointmentsRepo.BeginTx(ctx)
+	if err != nil {
+		return fmt.Errorf("AppointmentsUseCase - Update - uc.appointmentsRepo.BeginTx: %w", err)
+	}
+
+	defer tx.Release()
+
+	if err := uc.appointmentsRepo.Update(ctx, tx, id, status); err != nil {
+		return fmt.Errorf("AppointmentsUseCase - Update - uc.appointmentsRepo.Create: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("AppointmentsUseCase - Update - tx.Commit: %w", err)
+	}
+
 	return nil
 }

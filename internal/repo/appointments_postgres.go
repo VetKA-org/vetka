@@ -55,7 +55,7 @@ func (r *AppointmentsRepo) Create(
          (patient_id, assignee_id, scheduled_for, status, reason, details)
      VALUES
          ($1, $2, $3, 'scheduled', $4, $5)
-   `,
+    `,
 		patientID,
 		assigneeID,
 		scheduledFor,
@@ -63,6 +63,27 @@ func (r *AppointmentsRepo) Create(
 		details,
 	); err != nil {
 		return fmt.Errorf("AppointmentsRepo - Create - tx.Tx.Exec: %w", err)
+	}
+
+	return nil
+}
+
+func (r *AppointmentsRepo) Update(
+	ctx context.Context,
+	tx postgres.Transaction,
+	id uuid.UUID,
+	status entity.ApptStatus,
+) error {
+	if _, err := tx.Tx.Exec(
+		ctx,
+		`UPDATE appointments
+     SET status = $1
+     WHERE appointment_id = $2
+    `,
+		status,
+		id,
+	); err != nil {
+		return fmt.Errorf("AppointmentsRepo - Update - tx.Tx.Exec: %w", err)
 	}
 
 	return nil

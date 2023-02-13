@@ -24,6 +24,12 @@ type Appointments interface {
 		reason string,
 		details *string,
 	) error
+	Update(
+		ctx context.Context,
+		tx postgres.Transaction,
+		id uuid.UUID,
+		status entity.ApptStatus,
+	) error
 }
 
 type Patients interface {

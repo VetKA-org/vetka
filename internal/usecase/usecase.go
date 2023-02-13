@@ -20,7 +20,7 @@ type Appointments interface {
 		reason string,
 		details *string,
 	) error
-	Update(ctx context.Context, id uuid.UUID) error
+	Update(ctx context.Context, id uuid.UUID, status entity.ApptStatus) error
 }
 
 type Auth interface {
