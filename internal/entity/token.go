@@ -41,3 +41,20 @@ func NewJWTToken(user User, roles []Role, secret string, duration time.Duration)
 
 	return JWTToken(signedToken), nil
 }
+
+type DecodedToken struct {
+	jwt.RegisteredClaims
+	Roles []string `json:"roles"`
+}
+
+// Decode token, verify it's signature and return claims if the token is valid.
+func DecodeToken(rawToken, secret string) (*DecodedToken, error) {
+	claims := new(DecodedToken)
+	if _, err := jwt.ParseWithClaims(rawToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	}); err != nil {
+		return nil, err
+	}
+
+	return claims, nil
+}

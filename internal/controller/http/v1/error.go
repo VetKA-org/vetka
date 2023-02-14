@@ -50,10 +50,6 @@ func writeErrorResponse(c *gin.Context, code int, err error) {
 	c.AbortWithStatusJSON(code, errorResponse{err.Error()})
 }
 
-func writeUnauthorizedErrorResponse(c *gin.Context) {
-	c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse{"unauthorized"})
-}
-
 func writeBindErrorResponse(c *gin.Context, err error) {
 	var ve validator.ValidationErrors
 	if !errors.As(err, &ve) {

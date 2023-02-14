@@ -26,6 +26,7 @@ func newUsersRoutes(handler *gin.RouterGroup, log *logger.Logger, users usecase.
 	r := &usersRoutes{log, users}
 
 	h := handler.Group("/users")
+	h.Use(authorizedAccess(log, []string{entity.HeadDoctor}))
 	{
 		h.GET("/", r.doList)
 		h.POST("/", r.doRegister)

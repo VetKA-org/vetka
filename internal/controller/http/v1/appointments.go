@@ -36,6 +36,7 @@ func newAppointmentsRoutes(
 	r := &appointmentsRoutes{log, appointments}
 
 	h := handler.Group("/appointments")
+	h.Use(authorizedAccess(log, []string{entity.Administrator, entity.Doctor, entity.HeadDoctor}))
 	{
 		h.GET("/", r.doList)
 		h.POST("/", r.doCreate)
@@ -102,7 +103,7 @@ func (r *appointmentsRoutes) doUpdate(c *gin.Context) {
 		return
 	}
 
-	id, err := paramToUUID(c, "id")
+	id, err := getParamUUID(c, "id")
 	if err != nil {
 		writeErrorResponse(c, http.StatusBadRequest, err)
 

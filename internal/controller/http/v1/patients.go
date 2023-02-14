@@ -34,6 +34,7 @@ func newPatientsRoutes(handler *gin.RouterGroup, log *logger.Logger, patients us
 	r := &patientsRoutes{log, patients}
 
 	h := handler.Group("/patients")
+	h.Use(authorizedAccess(log, []string{entity.Administrator, entity.Doctor, entity.HeadDoctor}))
 	{
 		h.GET("/", r.doList)
 		h.POST("/", r.doRegister)

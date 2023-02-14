@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ func newQueueRoutes(handler *gin.RouterGroup, log *logger.Logger, queue usecase.
 	r := &queueRoutes{log, queue}
 
 	h := handler.Group("/queue")
+	h.Use(authorizedAccess(log, []string{entity.Administrator, entity.Doctor, entity.HeadDoctor}))
 	{
 		h.GET("/", r.doList)
 		h.POST("/", r.doEnqueue)

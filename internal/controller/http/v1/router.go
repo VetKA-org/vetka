@@ -16,7 +16,7 @@ func NewRouter(
 ) {
 	// Common midleware.
 	handler.Use(gin.Recovery())
-	handler.Use(authentication(log, cfg.Secret))
+	handler.Use(authenticatedAccess(log, cfg.Secret))
 
 	// Routers
 	h := handler.Group("/api/v1")
