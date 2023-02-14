@@ -40,7 +40,7 @@ func Run(cfg *config.Config) {
 
 	// HTTP Server.
 	handler := gin.New()
-	v1.NewRouter(handler, log, useCases)
+	v1.NewRouter(handler, log, cfg, useCases)
 	httpServer := httpserver.New(handler, cfg.RunAddress)
 
 	// Waiting signal.
