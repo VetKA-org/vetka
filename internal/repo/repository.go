@@ -70,7 +70,9 @@ type Species interface {
 	List(ctx context.Context) ([]entity.Species, error)
 }
 
-type Queue interface{}
+type Queue interface {
+	List(ctx context.Context) ([]uuid.UUID, error)
+}
 
 type Repositories struct {
 	Appointments Appointments

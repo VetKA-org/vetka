@@ -26,7 +26,7 @@ export RUN_ADDRESS=0.0.0.0:8080
 export DATABASE_URI=postgres://postgres:postgres@127.0.0.1:5432/vetka?sslmode=disable
 
 # Полный URL для установления соединения с Redis:
-export REDIS_URI=redis://127.0.0.1:6379
+export REDIS_URI=redis://:redis@127.0.0.1:6379/0
 
 # Секретный ключ для генерации подписи (по умолчанию не задан).
 # (!) Необходим для корректной работы сервиса.

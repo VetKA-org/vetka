@@ -29,13 +29,13 @@ func NewConfig() (*Config, error) {
 		"database-uri",
 		"d",
 		"postgres://postgres:postgres@127.0.0.1:5432/vetka?sslmode=disable",
-		"full database connection URI",
+		"full Postgres database connection URI",
 	)
 	redisURI := flag.StringP(
 		"redis-uri",
 		"r",
-		"redis://127.0.0.1:6379",
-		"full redis connection URI",
+		"redis://:redis@127.0.0.1:6379/0",
+		"full Redis connection URI",
 	)
 	secret := flag.StringP(
 		"secret",

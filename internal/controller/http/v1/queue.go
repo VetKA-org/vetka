@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"net/http"
+
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/logger"
@@ -26,17 +28,25 @@ func newQueueRoutes(handler *gin.RouterGroup, log *logger.Logger, queue usecase.
 	}
 }
 
-func (r *queueRoutes) doList(handler *gin.Context) {
+func (r *queueRoutes) doList(c *gin.Context) {
+	patients, err := r.queueUseCase.List(c.Request.Context())
+	if err != nil {
+		writeErrorResponse(c, http.StatusInternalServerError, err)
+
+		return
+	}
+
+	c.JSON(http.StatusOK, dataResponse{Data: patients})
 }
 
-func (r *queueRoutes) doEnqueue(handler *gin.Context) {
+func (r *queueRoutes) doEnqueue(c *gin.Context) {
 }
 
-func (r *queueRoutes) doMoveUp(handler *gin.Context) {
+func (r *queueRoutes) doMoveUp(c *gin.Context) {
 }
 
-func (r *queueRoutes) doMoveDown(handler *gin.Context) {
+func (r *queueRoutes) doMoveDown(c *gin.Context) {
 }
 
-func (r *queueRoutes) doDequeue(handler *gin.Context) {
+func (r *queueRoutes) doDequeue(c *gin.Context) {
 }
