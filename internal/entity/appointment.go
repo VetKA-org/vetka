@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -13,6 +14,13 @@ const (
 	ApptOpened    = ApptStatus("opened")
 	ApptClosed    = ApptStatus("closed")
 	ApptCanceled  = ApptStatus("canceled")
+)
+
+var (
+	ErrAptExists    = errors.New("appointment already exists")
+	ErrAptNotFound  = errors.New("appointment not found")
+	ErrAptHasMaxPos = errors.New("appointment is already first in the queue")
+	ErrAptHasMinPos = errors.New("appointment is already last in the queue")
 )
 
 type Appointment struct {

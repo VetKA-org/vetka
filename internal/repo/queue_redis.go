@@ -46,7 +46,7 @@ func (r *QueueRepo) Enqueue(ctx context.Context, id uuid.UUID) error {
 	}
 
 	if pos != -1 {
-		return entity.ErrPatientExists
+		return entity.ErrAptExists
 	}
 
 	if _, err := r.Redis.Client.RPush(ctx, _queueKey, id.String()).Result(); err != nil {
@@ -63,7 +63,7 @@ func (r *QueueRepo) Dequeue(ctx context.Context, id uuid.UUID) error {
 	}
 
 	if count == 0 {
-		return entity.ErrPatientNotFound
+		return entity.ErrAptNotFound
 	}
 
 	return nil
@@ -76,11 +76,11 @@ func (r *QueueRepo) MoveUp(ctx context.Context, id uuid.UUID) error {
 	}
 
 	if oldPos == -1 {
-		return entity.ErrPatientNotFound
+		return entity.ErrAptNotFound
 	}
 
 	if oldPos == 0 {
-		return entity.ErrPatientHasMaxPos
+		return entity.ErrAptHasMaxPos
 	}
 
 	if err := r.Redis.LSwap(ctx, _queueKey, oldPos, id.String(), oldPos-1); err != nil {
@@ -97,7 +97,7 @@ func (r *QueueRepo) MoveDown(ctx context.Context, id uuid.UUID) error {
 	}
 
 	if oldPos == -1 {
-		return entity.ErrPatientNotFound
+		return entity.ErrAptNotFound
 	}
 
 	newPos := oldPos + 1
@@ -108,7 +108,7 @@ func (r *QueueRepo) MoveDown(ctx context.Context, id uuid.UUID) error {
 	}
 
 	if newPos == itemsCount {
-		return entity.ErrPatientHasMinPos
+		return entity.ErrAptHasMinPos
 	}
 
 	if err := r.Redis.LSwap(ctx, _queueKey, oldPos, id.String(), newPos); err != nil {

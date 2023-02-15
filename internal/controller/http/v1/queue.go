@@ -49,8 +49,8 @@ func (r *queueRoutes) doEnqueue(c *gin.Context) {
 	}
 
 	if err := r.queueUseCase.Enqueue(c.Request.Context(), id); err != nil {
-		if errors.Is(err, entity.ErrPatientExists) {
-			writeErrorResponse(c, http.StatusConflict, entity.ErrPatientExists)
+		if errors.Is(err, entity.ErrAptExists) {
+			writeErrorResponse(c, http.StatusConflict, entity.ErrAptExists)
 
 			return
 		}
@@ -72,14 +72,14 @@ func (r *queueRoutes) doMoveUp(c *gin.Context) {
 	}
 
 	if err := r.queueUseCase.MoveUp(c.Request.Context(), id); err != nil {
-		if errors.Is(err, entity.ErrPatientNotFound) {
-			writeErrorResponse(c, http.StatusNotFound, entity.ErrPatientNotFound)
+		if errors.Is(err, entity.ErrAptNotFound) {
+			writeErrorResponse(c, http.StatusNotFound, entity.ErrAptNotFound)
 
 			return
 		}
 
-		if errors.Is(err, entity.ErrPatientHasMaxPos) {
-			writeErrorResponse(c, http.StatusBadRequest, entity.ErrPatientHasMaxPos)
+		if errors.Is(err, entity.ErrAptHasMaxPos) {
+			writeErrorResponse(c, http.StatusBadRequest, entity.ErrAptHasMaxPos)
 
 			return
 		}
@@ -101,14 +101,14 @@ func (r *queueRoutes) doMoveDown(c *gin.Context) {
 	}
 
 	if err := r.queueUseCase.MoveDown(c.Request.Context(), id); err != nil {
-		if errors.Is(err, entity.ErrPatientNotFound) {
-			writeErrorResponse(c, http.StatusNotFound, entity.ErrPatientNotFound)
+		if errors.Is(err, entity.ErrAptNotFound) {
+			writeErrorResponse(c, http.StatusNotFound, entity.ErrAptNotFound)
 
 			return
 		}
 
-		if errors.Is(err, entity.ErrPatientHasMinPos) {
-			writeErrorResponse(c, http.StatusBadRequest, entity.ErrPatientHasMinPos)
+		if errors.Is(err, entity.ErrAptHasMinPos) {
+			writeErrorResponse(c, http.StatusBadRequest, entity.ErrAptHasMinPos)
 
 			return
 		}
@@ -130,8 +130,8 @@ func (r *queueRoutes) doDequeue(c *gin.Context) {
 	}
 
 	if err := r.queueUseCase.Dequeue(c.Request.Context(), id); err != nil {
-		if errors.Is(err, entity.ErrPatientNotFound) {
-			writeErrorResponse(c, http.StatusNotFound, entity.ErrPatientNotFound)
+		if errors.Is(err, entity.ErrAptNotFound) {
+			writeErrorResponse(c, http.StatusNotFound, entity.ErrAptNotFound)
 
 			return
 		}
