@@ -45,12 +45,20 @@ func (uc *QueueUseCase) MoveUp(ctx context.Context, id uuid.UUID) error {
 	uc.mu.Lock()
 	defer uc.mu.Unlock()
 
+	if err := uc.queueRepo.MoveUp(ctx, id); err != nil {
+		return fmt.Errorf("QueueUseCase - MoveUp - uc.QueueRepo.MoveUp: %w", err)
+	}
+
 	return nil
 }
 
 func (uc *QueueUseCase) MoveDown(ctx context.Context, id uuid.UUID) error {
 	uc.mu.Lock()
 	defer uc.mu.Unlock()
+
+	if err := uc.queueRepo.MoveDown(ctx, id); err != nil {
+		return fmt.Errorf("QueueUseCase - MoveDown - uc.QueueRepo.MoveDown: %w", err)
+	}
 
 	return nil
 }

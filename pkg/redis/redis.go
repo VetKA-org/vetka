@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/redis/go-redis/v9"
-	uuid "github.com/satori/go.uuid"
 )
 
 type Redis struct {
@@ -33,8 +32,8 @@ func (r *Redis) Close() error {
 	return r.Client.Close()
 }
 
-func (r *Redis) LFirstMatch(ctx context.Context, key string, id uuid.UUID) (int64, error) {
-	pos, err := r.Client.LPos(ctx, key, id.String(), redis.LPosArgs{Rank: 1}).Result()
+func (r *Redis) LFirstMatch(ctx context.Context, key, value string) (int64, error) {
+	pos, err := r.Client.LPos(ctx, key, value, redis.LPosArgs{Rank: 1}).Result()
 	if err == nil {
 		return pos, nil
 	}
@@ -44,4 +43,27 @@ func (r *Redis) LFirstMatch(ctx context.Context, key string, id uuid.UUID) (int6
 	}
 
 	return -1, fmt.Errorf("Redis - ListFirst - r.Client.LPos: %w", err)
+}
+
+func (r *Redis) LSwap(
+	ctx context.Context,
+	key string,
+	lPos int64,
+	lValue string,
+	rPos int64,
+) error {
+	rValue, err := r.Client.LIndex(ctx, key, rPos).Result()
+	if err != nil {
+		return fmt.Errorf("Redis - LSwap - r.Client.LIndex: %w", err)
+	}
+
+	if _, err := r.Client.LSet(ctx, key, rPos, lValue).Result(); err != nil {
+		return fmt.Errorf("Redis - LSwap - r.Client.LSet: %w", err)
+	}
+
+	if _, err := r.Client.LSet(ctx, key, lPos, rValue).Result(); err != nil {
+		return fmt.Errorf("Redis - LSwap - r.Client.LSet: %w", err)
+	}
+
+	return nil
 }

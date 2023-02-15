@@ -40,7 +40,7 @@ func (r *QueueRepo) List(ctx context.Context) ([]uuid.UUID, error) {
 }
 
 func (r *QueueRepo) Enqueue(ctx context.Context, id uuid.UUID) error {
-	pos, err := r.Redis.LFirstMatch(ctx, _queueKey, id)
+	pos, err := r.Redis.LFirstMatch(ctx, _queueKey, id.String())
 	if err != nil {
 		return fmt.Errorf("QueueRepo - Enqueue - r.Redis.LFirstMatch: %w", err)
 	}
@@ -64,6 +64,55 @@ func (r *QueueRepo) Dequeue(ctx context.Context, id uuid.UUID) error {
 
 	if count == 0 {
 		return entity.ErrPatientNotFound
+	}
+
+	return nil
+}
+
+func (r *QueueRepo) MoveUp(ctx context.Context, id uuid.UUID) error {
+	oldPos, err := r.Redis.LFirstMatch(ctx, _queueKey, id.String())
+	if err != nil {
+		return fmt.Errorf("QueueRepo - MoveUp - r.Redis.LFirstMatch: %w", err)
+	}
+
+	if oldPos == -1 {
+		return entity.ErrPatientNotFound
+	}
+
+	if oldPos == 0 {
+		return entity.ErrPatientHasMaxPos
+	}
+
+	if err := r.Redis.LSwap(ctx, _queueKey, oldPos, id.String(), oldPos-1); err != nil {
+		return fmt.Errorf("QueueRepo - MoveUp - r.Redis.LSwap: %w", err)
+	}
+
+	return nil
+}
+
+func (r *QueueRepo) MoveDown(ctx context.Context, id uuid.UUID) error {
+	oldPos, err := r.Redis.LFirstMatch(ctx, _queueKey, id.String())
+	if err != nil {
+		return fmt.Errorf("QueueRepo - MoveDown - r.Redis.LFirstMatch: %w", err)
+	}
+
+	if oldPos == -1 {
+		return entity.ErrPatientNotFound
+	}
+
+	newPos := oldPos + 1
+
+	itemsCount, err := r.Redis.Client.LLen(ctx, _queueKey).Result()
+	if err != nil {
+		return fmt.Errorf("QueueRepo - MoveDown - r.Redis.LLen: %w", err)
+	}
+
+	if newPos == itemsCount {
+		return entity.ErrPatientHasMinPos
+	}
+
+	if err := r.Redis.LSwap(ctx, _queueKey, oldPos, id.String(), newPos); err != nil {
+		return fmt.Errorf("QueueRepo - MoveDown - r.Redis.LSwap: %w", err)
 	}
 
 	return nil

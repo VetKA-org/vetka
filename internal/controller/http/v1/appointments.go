@@ -103,7 +103,7 @@ func (r *appointmentsRoutes) doUpdate(c *gin.Context) {
 		return
 	}
 
-	id, err := getParamUUID(c, "id")
+	id, err := getParamID(c)
 	if err != nil {
 		writeErrorResponse(c, http.StatusBadRequest, err)
 

@@ -8,9 +8,11 @@ import (
 )
 
 var (
-	ErrPatientExists   = errors.New("patient already exists")
-	ErrPatientNotFound = errors.New("patient not found")
-	ErrUnknownSpecies  = errors.New("species not found")
+	ErrPatientExists    = errors.New("patient already exists")
+	ErrPatientNotFound  = errors.New("patient not found")
+	ErrPatientHasMaxPos = errors.New("patient is already first in the queue")
+	ErrPatientHasMinPos = errors.New("patient is already last in the queue")
+	ErrUnknownSpecies   = errors.New("species not found")
 )
 
 type Patient struct {

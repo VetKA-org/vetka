@@ -74,6 +74,8 @@ type Queue interface {
 	List(ctx context.Context) ([]uuid.UUID, error)
 	Enqueue(ctx context.Context, id uuid.UUID) error
 	Dequeue(ctx context.Context, id uuid.UUID) error
+	MoveUp(ctx context.Context, id uuid.UUID) error
+	MoveDown(ctx context.Context, id uuid.UUID) error
 }
 
 type Repositories struct {
