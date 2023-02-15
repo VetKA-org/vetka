@@ -2,7 +2,11 @@
 package redis
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/redis/go-redis/v9"
+	uuid "github.com/satori/go.uuid"
 )
 
 type Redis struct {
@@ -27,4 +31,17 @@ func (r *Redis) Close() error {
 	}
 
 	return r.Client.Close()
+}
+
+func (r *Redis) LFirstMatch(ctx context.Context, key string, id uuid.UUID) (int64, error) {
+	pos, err := r.Client.LPos(ctx, key, id.String(), redis.LPosArgs{Rank: 1}).Result()
+	if err == nil {
+		return pos, nil
+	}
+
+	if IsEntityNotFound(err) {
+		return -1, nil
+	}
+
+	return -1, fmt.Errorf("Redis - ListFirst - r.Client.LPos: %w", err)
 }
