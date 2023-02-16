@@ -1,11 +1,13 @@
 package v1
 
 import (
+	"errors"
 	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/VetKA-org/vetka/internal/entity"
+	"github.com/VetKA-org/vetka/pkg/compression"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -64,4 +66,31 @@ func authorizedAccess(log *logger.Logger, allowedRoles []string) gin.HandlerFunc
 
 		c.AbortWithStatusJSON(http.StatusForbidden, errorResponse{"forbidden"})
 	}
+}
+
+func DecompressRequest(c *gin.Context) {
+	encoding := c.GetHeader("Content-Encoding")
+	if encoding == "" {
+		c.Next()
+
+		return
+	}
+
+	extractor, err := compression.NewExtractor(c.Request.Body, encoding)
+	if err != nil {
+		if errors.Is(err, compression.ErrEncodingNotSupported) {
+			writeErrorResponse(c, http.StatusNotAcceptable, compression.ErrEncodingNotSupported)
+
+			return
+		}
+
+		writeErrorResponse(c, http.StatusInternalServerError, err)
+
+		return
+	}
+
+	defer extractor.Close()
+	c.Request.Body = extractor
+
+	c.Next()
 }
