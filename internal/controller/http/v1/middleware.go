@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/VetKA-org/vetka/internal/entity"
@@ -76,7 +77,7 @@ func DecompressRequest(c *gin.Context) {
 		return
 	}
 
-	extractor, err := compression.NewExtractor(c.Request.Body, encoding)
+	decoder, err := compression.NewDecoder(c.Request.Body, encoding)
 	if err != nil {
 		if errors.Is(err, compression.ErrEncodingNotSupported) {
 			writeErrorResponse(c, http.StatusNotAcceptable, compression.ErrEncodingNotSupported)
@@ -89,8 +90,35 @@ func DecompressRequest(c *gin.Context) {
 		return
 	}
 
-	defer extractor.Close()
-	c.Request.Body = extractor
+	defer decoder.Close()
+	c.Request.Body = decoder
 
 	c.Next()
+}
+
+func CompressResponse(log *logger.Logger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		encoding := c.GetHeader("Accept-Encoding")
+		if encoding == "" {
+			c.Next()
+
+			return
+		}
+
+		encoder, err := compression.NewEncoder(log, c.Writer, encoding)
+		if err != nil {
+			writeErrorResponse(c, http.StatusInternalServerError, err)
+
+			return
+		}
+
+		c.Writer = encoder
+
+		defer func() {
+			encoder.Close()
+			c.Header("Content-Length", strconv.Itoa(c.Writer.Size()))
+		}()
+
+		c.Next()
+	}
 }

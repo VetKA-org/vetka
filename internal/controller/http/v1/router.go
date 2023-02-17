@@ -18,6 +18,7 @@ func NewRouter(
 	handler.Use(gin.Recovery())
 	handler.Use(authenticatedAccess(log, cfg.Secret))
 	handler.Use(DecompressRequest)
+	handler.Use(CompressResponse(log))
 
 	// Routers
 	h := handler.Group("/api/v1")
