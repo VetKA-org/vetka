@@ -13,13 +13,11 @@ const (
 	_defaultWriteTimeout      = 10 * time.Second
 	_defaultIdleTimeout       = 120 * time.Second
 	_defaultReadHeaderTimeout = 5 * time.Second
-	_defaultShutdownTimeout   = 3 * time.Second
 )
 
 type Server struct {
-	server          *http.Server
-	notify          chan error
-	shutdownTimeout time.Duration
+	server *http.Server
+	notify chan error
 }
 
 func New(handler http.Handler, address string) *Server {
@@ -33,9 +31,8 @@ func New(handler http.Handler, address string) *Server {
 	}
 
 	s := &Server{
-		server:          httpServer,
-		notify:          make(chan error, 1),
-		shutdownTimeout: _defaultShutdownTimeout,
+		server: httpServer,
+		notify: make(chan error, 1),
 	}
 
 	s.start()
@@ -54,13 +51,10 @@ func (s *Server) Notify() <-chan error {
 	return s.notify
 }
 
-func (s *Server) Shutdown() error {
+func (s *Server) Shutdown(ctx context.Context) error {
 	if s.server == nil {
 		return nil
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
-	defer cancel()
 
 	return s.server.Shutdown(ctx)
 }
