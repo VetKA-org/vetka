@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 
+	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/caarlos0/env/v6"
 	flag "github.com/spf13/pflag"
 )
@@ -10,11 +11,11 @@ import (
 var errSecretNotSet = errors.New("secret key is required")
 
 type Config struct {
-	RunAddress  string `env:"RUN_ADDRESS"`
-	DatabaseURI string `env:"DATABASE_URI"`
-	RedisURI    string `env:"REDIS_URI"`
-	Secret      string `env:"SECRET"`
-	LogLevel    string `env:"LOG_LEVEL"`
+	RunAddress  string        `env:"RUN_ADDRESS"`
+	DatabaseURI string        `env:"DATABASE_URI"`
+	RedisURI    string        `env:"REDIS_URI"`
+	Secret      entity.Secret `env:"SECRET"`
+	LogLevel    string        `env:"LOG_LEVEL"`
 }
 
 // NewConfig returns app config.
@@ -56,7 +57,7 @@ func NewConfig() (*Config, error) {
 		RunAddress:  *runAddress,
 		DatabaseURI: *databaseURI,
 		RedisURI:    *redisURI,
-		Secret:      *secret,
+		Secret:      entity.Secret(*secret),
 		LogLevel:    *logLevel,
 	}
 

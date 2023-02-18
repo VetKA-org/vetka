@@ -7,6 +7,7 @@ import (
 	"github.com/VetKA-org/vetka/internal/config"
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/repo"
+	"github.com/VetKA-org/vetka/pkg/logger"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -73,10 +74,10 @@ type UseCases struct {
 	Users        Users
 }
 
-func New(cfg *config.Config, repos *repo.Repositories) *UseCases {
+func New(log *logger.Logger, cfg *config.Config, repos *repo.Repositories) *UseCases {
 	return &UseCases{
 		Appointments: NewAppointmentsUseCase(repos.Appointments),
-		Auth:         NewAuthUseCase(cfg.Secret, repos.Users, repos.Roles),
+		Auth:         NewAuthUseCase(log, cfg.Secret, repos.Users, repos.Roles),
 		Patients:     NewPatientsUseCase(repos.Patients),
 		Queue:        NewQueueUseCase(repos.Queue),
 		Roles:        NewRolesUseCase(repos.Roles),

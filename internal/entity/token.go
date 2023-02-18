@@ -11,7 +11,7 @@ import (
 type JWTToken string
 
 // Issue new token using HS256 signing method.
-func NewJWTToken(user User, roles []Role, secret string, duration time.Duration) (JWTToken, error) {
+func NewJWTToken(user User, roles []Role, secret Secret, duration time.Duration) (JWTToken, error) {
 	now := time.Now()
 
 	assignedRoles := make([]string, len(roles))
@@ -48,7 +48,7 @@ type DecodedToken struct {
 }
 
 // Decode token, verify it's signature and return claims if the token is valid.
-func DecodeToken(rawToken, secret string) (*DecodedToken, error) {
+func DecodeToken(rawToken string, secret Secret) (*DecodedToken, error) {
 	claims := new(DecodedToken)
 	if _, err := jwt.ParseWithClaims(rawToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil

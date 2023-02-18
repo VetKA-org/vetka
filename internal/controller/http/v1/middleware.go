@@ -17,7 +17,7 @@ var anonymousRouteRe = regexp.MustCompile(`^/api/v\d/login`)
 
 const _rolesKey = "roles"
 
-func authenticatedAccess(log *logger.Logger, secret string) gin.HandlerFunc {
+func authenticatedAccess(log *logger.Logger, secret entity.Secret) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		matches := anonymousRouteRe.FindStringSubmatch(c.Request.URL.Path)
 		if len(matches) > 0 {

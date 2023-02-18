@@ -39,7 +39,7 @@ func Run(cfg *config.Config) {
 
 	// Domain.
 	repos := repo.New(log, pg, rdb)
-	useCases := usecase.New(cfg, repos)
+	useCases := usecase.New(log, cfg, repos)
 
 	// HTTP Server.
 	handler := gin.New()

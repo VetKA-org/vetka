@@ -7,17 +7,30 @@ import (
 
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/repo"
+	"github.com/VetKA-org/vetka/pkg/logger"
 )
 
-const _defaultTokenLifeTime = 15 * time.Minute
+const (
+	_defaultMinimalSecretLength = 32
+	_defaultTokenLifeTime       = 15 * time.Minute
+)
 
 type AuthUseCase struct {
-	secret    string
+	secret    entity.Secret
 	usersRepo repo.Users
 	rolesRepo repo.Roles
 }
 
-func NewAuthUseCase(secret string, users repo.Users, roles repo.Roles) *AuthUseCase {
+func NewAuthUseCase(
+	log *logger.Logger,
+	secret entity.Secret,
+	users repo.Users,
+	roles repo.Roles,
+) *AuthUseCase {
+	if len([]byte(secret)) < _defaultMinimalSecretLength {
+		log.Warn().Msg("Insecure signature: secret key is shorter than 32 bytes!")
+	}
+
 	return &AuthUseCase{secret, users, roles}
 }
 
