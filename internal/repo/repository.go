@@ -61,7 +61,7 @@ type Users interface {
 type Roles interface {
 	BeginTx(ctx context.Context) (postgres.Transaction, error)
 
-	List(ctx context.Context) ([]entity.Role, error)
+	List(ctx context.Context, name string) ([]entity.Role, error)
 	Assign(ctx context.Context, tx postgres.Transaction, userID uuid.UUID, roles []uuid.UUID) error
 	Get(ctx context.Context, userID uuid.UUID) ([]entity.Role, error)
 }

@@ -52,7 +52,7 @@ type Queue interface {
 }
 
 type Roles interface {
-	List(ctx context.Context) ([]entity.Role, error)
+	List(ctx context.Context, name string) ([]entity.Role, error)
 }
 
 type Species interface {

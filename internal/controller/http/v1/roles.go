@@ -23,7 +23,9 @@ func newRolesRoutes(handler *gin.RouterGroup, log *logger.Logger, roles usecase.
 }
 
 func (r *rolesRoutes) doList(c *gin.Context) {
-	roles, err := r.rolesUseCase.List(c.Request.Context())
+	name := c.Query("name")
+
+	roles, err := r.rolesUseCase.List(c.Request.Context(), name)
 	if err != nil {
 		writeErrorResponse(c, http.StatusInternalServerError, err)
 

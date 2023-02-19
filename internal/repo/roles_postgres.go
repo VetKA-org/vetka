@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/postgres"
@@ -17,9 +18,18 @@ func NewRolesRepo(pg *postgres.Postgres) *RolesRepo {
 	return &RolesRepo{pg}
 }
 
-func (r *RolesRepo) List(ctx context.Context) ([]entity.Role, error) {
+func (r *RolesRepo) List(ctx context.Context, name string) ([]entity.Role, error) {
+	var values []interface{}
+
+	query := "SELECT role_id, name FROM roles"
+
+	if name != "" {
+		values = append(values, name+"%")
+		query += " WHERE name ILIKE $" + strconv.Itoa(len(values))
+	}
+
 	rv := make([]entity.Role, 0)
-	if err := r.Select(ctx, &rv, "SELECT role_id, name FROM roles"); err != nil {
+	if err := r.Select(ctx, &rv, query, values...); err != nil {
 		return nil, fmt.Errorf("RolesRepo - List - r.Select: %w", err)
 	}
 
