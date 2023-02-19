@@ -24,6 +24,7 @@ const _defaultShutdownTimeout = 10 * time.Second
 // Run creates objects via constructors.
 func Run(cfg *config.Config) {
 	log := logger.New(cfg.LogLevel)
+	log.Info().Msg(cfg.String())
 
 	// Redis connection.
 	rdb, err := redis.New(cfg.RedisURI)

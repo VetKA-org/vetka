@@ -2,6 +2,8 @@ package config
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/caarlos0/env/v6"
@@ -71,4 +73,17 @@ func NewConfig() (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+func (c *Config) String() string {
+	var sb strings.Builder
+
+	sb.WriteString("Configuration:\n")
+	sb.WriteString(fmt.Sprintf("\t\tListening address: %s\n", c.RunAddress))
+	sb.WriteString(fmt.Sprintf("\t\tDatabase URI: %s\n", c.DatabaseURI))
+	sb.WriteString(fmt.Sprintf("\t\tRedis URI: %s\n", c.RedisURI))
+	sb.WriteString(fmt.Sprintf("\t\tSecret: %s\n", c.Secret))
+	sb.WriteString(fmt.Sprintf("\t\tLog level: %s\n", c.LogLevel))
+
+	return sb.String()
 }
