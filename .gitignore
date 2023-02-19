@@ -6,3 +6,6 @@ cmd/app/app
 
 # Draw.io backups.
 *.drawio.bkp
+
+# Output of the go coverage tool.
+coverage.*
