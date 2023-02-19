@@ -3,7 +3,7 @@ name: CI
 on: [push, pull_request]
 
 env:
-  DATABASE_URI: pgx://postgres:postgres@postgres:5432/vetka?sslmode=disable
+  DATABASE_URI: postgres://postgres:postgres@postgres:5432/vetka?sslmode=disable
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
         run: make build
 
       - name: Run unit tests
-        run: make tests
+        run: make unit-tests
 
   lint:
     runs-on: ubuntu-latest
@@ -52,10 +52,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install golang-migrate
-        run: go install -tags "pgx" github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+        run: go install -tags "postgres" github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
       - name: Test migrations up
         run: migrate -database ${DATABASE_URI} -path ./migrations up
+
+      - name: Run integration tests
+        run: make int-tests
 
       - name: Test migrations down
         run: migrate -database ${DATABASE_URI} -path ./migrations down -all

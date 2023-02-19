@@ -54,7 +54,7 @@ make install-tools
 ### migrate
 Для работы с миграциями БД необходимо установить утилиту [golang-migrate](https://github.com/golang-migrate/migrate):
 ```bash
-go install -tags "pgx" github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+go install -tags "postgres" github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 ```
 
 ### Команды
