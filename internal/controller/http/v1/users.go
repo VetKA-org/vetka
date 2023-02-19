@@ -35,7 +35,7 @@ func (r *usersRoutes) doList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dataResponse{Data: users})
+	c.JSON(http.StatusOK, schema.ListUsersResponse{Data: users})
 }
 
 func (r *usersRoutes) doRegister(c *gin.Context) {

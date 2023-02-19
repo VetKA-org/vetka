@@ -5,6 +5,7 @@ import (
 
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/logger"
+	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,5 +33,5 @@ func (r *rolesRoutes) doList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dataResponse{Data: roles})
+	c.JSON(http.StatusOK, schema.ListRolesResponse{Data: roles})
 }

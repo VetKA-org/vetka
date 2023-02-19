@@ -7,6 +7,7 @@ import (
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
+	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
 )
@@ -65,7 +66,7 @@ func (r *appointmentsRoutes) doList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dataResponse{Data: appointments})
+	c.JSON(http.StatusOK, schema.DataResponse{Data: appointments})
 }
 
 func (r *appointmentsRoutes) doCreate(c *gin.Context) {
