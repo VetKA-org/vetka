@@ -29,6 +29,12 @@ func authenticatedAccess(log *logger.Logger, secret entity.Secret) gin.HandlerFu
 		rawToken := strings.TrimPrefix(c.GetHeader("Authorization"), "Bearer ")
 		rawToken = strings.TrimSpace(rawToken)
 
+		if rawToken == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse{"unauthorized"})
+
+			return
+		}
+
 		decodedToken, err := entity.DecodeToken(rawToken, secret)
 		if err != nil {
 			log.Error().
