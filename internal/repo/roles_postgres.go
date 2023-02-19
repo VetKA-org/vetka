@@ -47,6 +47,10 @@ func (r *RolesRepo) Assign(
 
 	for i := 0; i < len(roles); i++ {
 		if err := batchResp.Exec(); err != nil {
+			if postgres.IsForeignKeyViolation(err, "users_roles_role_id_fkey") {
+				return entity.ErrRoleNotFound
+			}
+
 			return fmt.Errorf("RolesRepo - Assign - batchResp.Exec: %w", err)
 		}
 	}
@@ -62,7 +66,7 @@ func (r *RolesRepo) Get(ctx context.Context, userID uuid.UUID) ([]entity.Role, e
 		`SELECT
          role_id, name
      FROM (
-     SELECT
+         SELECT
              role_id
          FROM
              users_roles

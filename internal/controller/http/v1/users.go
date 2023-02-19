@@ -7,6 +7,7 @@ import (
 	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/logger"
+	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
 )
@@ -45,7 +46,7 @@ func (r *usersRoutes) doList(c *gin.Context) {
 }
 
 func (r *usersRoutes) doRegister(c *gin.Context) {
-	var req doRegisterUserRequest
+	var req schema.RegisterUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		writeBindErrorResponse(c, err)
@@ -57,6 +58,12 @@ func (r *usersRoutes) doRegister(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, entity.ErrUserExists) {
 			writeErrorResponse(c, http.StatusConflict, entity.ErrUserExists)
+
+			return
+		}
+
+		if errors.Is(err, entity.ErrRoleNotFound) {
+			writeErrorResponse(c, http.StatusBadRequest, entity.ErrRoleNotFound)
 
 			return
 		}
