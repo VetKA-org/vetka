@@ -63,3 +63,7 @@ func TestMain(m *testing.M) {
 func TestAuth(t *testing.T) { //nolint:paralleltest //sync test
 	suite.Run(t, new(AuthTestSuite))
 }
+
+func TestUsers(t *testing.T) { //nolint:paralleltest //sync test
+	suite.Run(t, new(UsersTestSuite))
+}

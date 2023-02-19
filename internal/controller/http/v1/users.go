@@ -9,18 +9,11 @@ import (
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
-	uuid "github.com/satori/go.uuid"
 )
 
 type usersRoutes struct {
 	log          *logger.Logger
 	usersUseCase usecase.Users
-}
-
-type doRegisterUserRequest struct {
-	Login    string      `json:"login" binding:"required,max=128"`
-	Password string      `json:"password" binding:"required"`
-	Roles    []uuid.UUID `json:"roles" binding:"required"`
 }
 
 func newUsersRoutes(handler *gin.RouterGroup, log *logger.Logger, users usecase.Users) {

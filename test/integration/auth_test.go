@@ -14,7 +14,7 @@ type AuthTestSuite struct {
 	suite.Suite
 }
 
-func (ts *AuthTestSuite) TestSendRequestsWithoutToken() {
+func (ts *AuthTestSuite) TestDoRequestsWithoutToken() {
 	endpoints := [...]string{
 		"api/v1/appointments",
 		"api/v1/patients",
@@ -26,7 +26,7 @@ func (ts *AuthTestSuite) TestSendRequestsWithoutToken() {
 
 	for _, endpoint := range endpoints {
 		ts.T().Run("Access denied to "+endpoint, func(t *testing.T) {
-			resp := sendGetReq(t, endpoint, nil)
+			resp := doGetReq(t, endpoint, nil)
 
 			require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
 		})
@@ -57,7 +57,7 @@ func (ts *AuthTestSuite) TestSendRequestsWithBadToken() {
 			headers := map[string]string{"Authorization": "Bearer " + tc.token}
 			opts := grequests.RequestOptions{Headers: headers}
 
-			resp := sendGetReq(t, "api/v1/users", &opts)
+			resp := doGetReq(t, "api/v1/users", &opts)
 
 			require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
 		})
@@ -102,21 +102,9 @@ func (ts *AuthTestSuite) TestBadLogin() {
 			body := schema.LoginRequest{Login: tc.login, Password: tc.password}
 			opts := grequests.RequestOptions{JSON: body}
 
-			resp := sendPostReq(t, "api/v1/login", &opts)
+			resp := doPostReq(t, "api/v1/login", &opts)
 
 			require.Equal(t, tc.expected, resp.StatusCode)
 		})
 	}
-}
-
-func (ts *AuthTestSuite) TestLoginAsDefaultUser() {
-	r := ts.Require()
-
-	body := schema.LoginRequest{Login: "head", Password: "1q2w3e"}
-	opts := grequests.RequestOptions{JSON: body}
-
-	resp := sendPostReq(ts.T(), "api/v1/login", &opts)
-
-	r.Equal(http.StatusOK, resp.StatusCode)
-	r.NotEmpty(resp.Header.Get("Authorization"))
 }
