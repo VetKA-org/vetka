@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
@@ -22,8 +23,8 @@ type Postgres struct {
 	log  *logger.Logger
 }
 
-func New(url string, log *logger.Logger) (*Postgres, error) {
-	poolConfig, err := pgxpool.ParseConfig(url)
+func New(url entity.SecretURI, log *logger.Logger) (*Postgres, error) {
+	poolConfig, err := pgxpool.ParseConfig(string(url))
 	if err != nil {
 		return nil, fmt.Errorf("Postgres - New - pgxpool.ParseConfig: %w", err)
 	}

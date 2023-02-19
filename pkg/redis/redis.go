@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -12,8 +13,8 @@ type Redis struct {
 	Client *redis.Client
 }
 
-func New(url string) (*Redis, error) {
-	cfg, err := redis.ParseURL(url)
+func New(url entity.SecretURI) (*Redis, error) {
+	cfg, err := redis.ParseURL(string(url))
 	if err != nil {
 		return nil, err
 	}

@@ -13,11 +13,11 @@ import (
 var errSecretNotSet = errors.New("secret key is required")
 
 type Config struct {
-	RunAddress  string        `env:"RUN_ADDRESS"`
-	DatabaseURI string        `env:"DATABASE_URI"`
-	RedisURI    string        `env:"REDIS_URI"`
-	Secret      entity.Secret `env:"SECRET"`
-	LogLevel    string        `env:"LOG_LEVEL"`
+	RunAddress  string           `env:"RUN_ADDRESS"`
+	DatabaseURI entity.SecretURI `env:"DATABASE_URI"`
+	RedisURI    entity.SecretURI `env:"REDIS_URI"`
+	Secret      entity.Secret    `env:"SECRET"`
+	LogLevel    string           `env:"LOG_LEVEL"`
 }
 
 // NewConfig returns app config.
@@ -57,8 +57,8 @@ func NewConfig() (*Config, error) {
 
 	cfg := &Config{
 		RunAddress:  *runAddress,
-		DatabaseURI: *databaseURI,
-		RedisURI:    *redisURI,
+		DatabaseURI: entity.SecretURI(*databaseURI),
+		RedisURI:    entity.SecretURI(*redisURI),
 		Secret:      entity.Secret(*secret),
 		LogLevel:    *logLevel,
 	}
