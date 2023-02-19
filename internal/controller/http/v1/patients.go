@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/usecase"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"

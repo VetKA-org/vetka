@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/internal/repo"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	uuid "github.com/satori/go.uuid"
 )
 

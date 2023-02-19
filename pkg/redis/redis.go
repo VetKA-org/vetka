@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/VetKA-org/vetka/internal/entity"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/redis/go-redis/v9"
 )
 

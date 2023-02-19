@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/VetKA-org/vetka/internal/entity"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"

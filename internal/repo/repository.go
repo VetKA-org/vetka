@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/VetKA-org/vetka/internal/entity"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/VetKA-org/vetka/pkg/postgres"
 	"github.com/VetKA-org/vetka/pkg/redis"

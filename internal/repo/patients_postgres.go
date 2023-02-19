@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/VetKA-org/vetka/internal/entity"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/postgres"
 	uuid "github.com/satori/go.uuid"
 )

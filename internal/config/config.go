@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/VetKA-org/vetka/internal/entity"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/caarlos0/env/v6"
 	flag "github.com/spf13/pflag"
 )

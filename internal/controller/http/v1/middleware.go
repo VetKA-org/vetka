@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/VetKA-org/vetka/internal/entity"
 	"github.com/VetKA-org/vetka/pkg/compression"
+	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
