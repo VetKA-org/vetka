@@ -22,7 +22,9 @@ func newSpeciesRoutes(handler *gin.RouterGroup, species usecase.Species) {
 }
 
 func (r *speciesRoutes) doList(c *gin.Context) {
-	species, err := r.speciesUseCase.List(c.Request.Context())
+	title := c.Query("title")
+
+	species, err := r.speciesUseCase.List(c.Request.Context(), title)
 	if err != nil {
 		writeErrorResponse(c, http.StatusInternalServerError, err)
 

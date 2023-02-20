@@ -16,8 +16,8 @@ func NewSpeciesUseCase(species repo.Species) *SpeciesUseCase {
 	return &SpeciesUseCase{species}
 }
 
-func (uc *SpeciesUseCase) List(ctx context.Context) ([]entity.Species, error) {
-	species, err := uc.speciesRepo.List(ctx)
+func (uc *SpeciesUseCase) List(ctx context.Context, title string) ([]entity.Species, error) {
+	species, err := uc.speciesRepo.List(ctx, title)
 	if err != nil {
 		return nil, fmt.Errorf("SpeciesUseCase - List - uc.speciesRepo.List: %w", err)
 	}
