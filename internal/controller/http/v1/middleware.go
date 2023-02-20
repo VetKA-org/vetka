@@ -128,3 +128,21 @@ func CompressResponse(log *logger.Logger) gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func RequestsLogger(log *logger.Logger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		l := log.With().
+			Str("source", c.ClientIP()).
+			Str("method", c.Request.Method).
+			Str("path", c.FullPath()).
+			Logger()
+
+		l.Info().Msg("")
+
+		c.Next()
+
+		l.Info().
+			Int("status", c.Writer.Status()).
+			Msg("")
+	}
+}

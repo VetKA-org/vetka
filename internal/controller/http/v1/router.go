@@ -16,6 +16,7 @@ func NewRouter(
 ) {
 	// Common midleware.
 	handler.Use(gin.Recovery())
+	handler.Use(RequestsLogger(log))
 	handler.Use(authenticatedAccess(log, cfg.Secret))
 	handler.Use(DecompressRequest)
 	handler.Use(CompressResponse(log))
