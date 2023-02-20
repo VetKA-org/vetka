@@ -122,7 +122,11 @@ func CompressResponse(log *logger.Logger) gin.HandlerFunc {
 
 		defer func() {
 			encoder.Close()
-			c.Header("Content-Length", strconv.Itoa(c.Writer.Size()))
+
+			// NB (alkurbatov): c.Writer.Size() == -1 means "No resonse body".
+			if c.Writer.Size() != -1 {
+				c.Header("Content-Length", strconv.Itoa(c.Writer.Size()))
+			}
 		}()
 
 		c.Next()
