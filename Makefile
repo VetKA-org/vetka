@@ -30,5 +30,7 @@ unit-tests: ## Run unit tests
 .PHONY: unit-tests
 
 int-tests: build ### Run integration tests
-	go clean -testcache && DATABASE_URI=$(DATABASE_URI) SECRET=xxx go test -v ./test/integration/...
+	@migrate -database $(DATABASE_URI) -path ./migrations down -all
+	@migrate -database $(DATABASE_URI) -path ./migrations up
+	@go clean -testcache && DATABASE_URI=$(DATABASE_URI) SECRET=xxx go test -v ./test/integration/...
 .PHONY: int-tests

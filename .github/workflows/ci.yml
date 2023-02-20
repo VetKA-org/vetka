@@ -54,9 +54,6 @@ jobs:
       - name: Install golang-migrate
         run: go install -tags "postgres" github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
-      - name: Test migrations up
-        run: migrate -database ${DATABASE_URI} -path ./migrations up
-
       - name: Run integration tests
         run: make int-tests
 
