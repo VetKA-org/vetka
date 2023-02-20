@@ -3,31 +3,16 @@ package v1
 import (
 	"errors"
 	"net/http"
-	"time"
 
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
-	uuid "github.com/satori/go.uuid"
 )
 
 type patientsRoutes struct {
 	patientsUseCase usecase.Patients
-}
-
-type doRegisterPatientRequest struct {
-	Name       string        `json:"name" binding:"required,max=32"`
-	SpeciesID  uuid.UUID     `json:"species_id" binding:"required"`
-	Gender     entity.Gender `json:"gender" binding:"required,oneof=male female"`
-	Breed      string        `json:"breed" binding:"required,max=64"`
-	Birth      time.Time     `json:"birth" time_format:"2006-01-02" time_utc:"1" binding:"required"`
-	Aggressive bool          `json:"aggressive"`
-	// NB (alkurbatov): Ask lll to ignore struct tags, see:
-	// https://github.com/walle/lll/issues/11
-	VaccinatedAt *time.Time `json:"vaccinated_at" time_format:"2006-01-02" time_utc:"1" binding:"omitempty,gtefield=Birth"` //nolint:lll // tags
-	SterilizedAt *time.Time `json:"sterilized_at" time_format:"2006-01-02" time_utc:"1" binding:"omitempty,gtefield=Birth"` //nolint:lll // tags
 }
 
 func newPatientsRoutes(handler *gin.RouterGroup, log *logger.Logger, patients usecase.Patients) {
@@ -49,11 +34,11 @@ func (r *patientsRoutes) doList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, schema.DataResponse{Data: patients})
+	c.JSON(http.StatusOK, schema.ListPatientsResponse{Data: patients})
 }
 
 func (r *patientsRoutes) doRegister(c *gin.Context) {
-	var req doRegisterPatientRequest
+	var req schema.RegisterPatientRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		writeBindErrorResponse(c, err)
@@ -75,6 +60,12 @@ func (r *patientsRoutes) doRegister(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, entity.ErrPatientExists) {
 			writeErrorResponse(c, http.StatusConflict, entity.ErrPatientExists)
+
+			return
+		}
+
+		if errors.Is(err, entity.ErrSpeciesNotFound) {
+			writeErrorResponse(c, http.StatusBadRequest, entity.ErrSpeciesNotFound)
 
 			return
 		}

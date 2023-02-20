@@ -3,6 +3,7 @@ package integration_test
 import (
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/levigross/grequests"
@@ -62,4 +63,22 @@ func doLoginAsHead(t *testing.T) string {
 	t.Helper()
 
 	return doLogin(t, "head", "1q2w3e")
+}
+
+func timeFromString(t *testing.T, value string) *time.Time {
+	t.Helper()
+
+	rv, err := time.Parse(time.RFC3339, value)
+	require.NoError(t, err)
+
+	return &rv
+}
+
+func extractErrors(t *testing.T, resp *grequests.Response) schema.BindErrorsResponse {
+	t.Helper()
+
+	body := schema.BindErrorsResponse{}
+	require.NoError(t, resp.JSON(&body))
+
+	return body
 }

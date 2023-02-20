@@ -5,18 +5,10 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
-
-type errorResponse struct {
-	Error string `json:"error"`
-}
-
-type invalidField struct {
-	Field   string `json:"field"`
-	Message string `json:"message"`
-}
 
 func getErrorMsg(fe validator.FieldError) string {
 	switch fe.Tag() {
@@ -47,7 +39,7 @@ func getErrorMsg(fe validator.FieldError) string {
 }
 
 func writeErrorResponse(c *gin.Context, code int, err error) {
-	c.AbortWithStatusJSON(code, errorResponse{err.Error()})
+	c.AbortWithStatusJSON(code, schema.ErrorResponse{Error: err.Error()})
 }
 
 func writeBindErrorResponse(c *gin.Context, err error) {
@@ -58,10 +50,13 @@ func writeBindErrorResponse(c *gin.Context, err error) {
 		return
 	}
 
-	out := make([]invalidField, len(ve))
+	out := make([]schema.InvalidField, len(ve))
 	for i, fe := range ve {
-		out[i] = invalidField{strings.ToLower(fe.Field()), getErrorMsg(fe)}
+		out[i] = schema.InvalidField{
+			Field:   strings.ToLower(fe.Field()),
+			Message: getErrorMsg(fe),
+		}
 	}
 
-	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": out})
+	c.AbortWithStatusJSON(http.StatusBadRequest, schema.BindErrorsResponse{Errors: out})
 }

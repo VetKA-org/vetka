@@ -60,10 +60,14 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func TestAuth(t *testing.T) { //nolint:paralleltest //sync test
+func TestAuth(t *testing.T) {
 	suite.Run(t, new(AuthTestSuite))
 }
 
-func TestUsers(t *testing.T) { //nolint:paralleltest //sync test
+func TestUsers(t *testing.T) {
 	suite.Run(t, new(UsersTestSuite))
+}
+
+func TestPatients(t *testing.T) {
+	suite.Run(t, new(PatientsTestSuite))
 }

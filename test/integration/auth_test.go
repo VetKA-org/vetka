@@ -99,8 +99,8 @@ func (ts *AuthTestSuite) TestBadLogin() {
 
 	for _, tc := range tt {
 		ts.T().Run(tc.name, func(t *testing.T) {
-			body := schema.LoginRequest{Login: tc.login, Password: tc.password}
-			opts := grequests.RequestOptions{JSON: body}
+			req := schema.LoginRequest{Login: tc.login, Password: tc.password}
+			opts := grequests.RequestOptions{JSON: req}
 
 			resp := doPostReq(t, "api/v1/login", &opts)
 

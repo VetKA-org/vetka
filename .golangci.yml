@@ -28,6 +28,7 @@ linters-settings:
       - style
     disabled-checks:
       - dupImport
+      - importShadow
       - unnecessaryBlock
   gofumpt:
     extra-rules: true
@@ -41,7 +42,7 @@ linters-settings:
           - operation
           - return
   govet:
-    check-shadowing: true
+    check-shadowing: false
   lll:
     line-length: 100
   misspell:
@@ -106,7 +107,6 @@ linters:
     - noctx
     - nolintlint
     - nosprintfhostport
-    - paralleltest
     - prealloc
     - predeclared
     - reassign
@@ -130,6 +130,7 @@ linters:
 #    - gci
 #    - goheader
 #    - ifshort
+#    - paralleltest
 #    - rowserrcheck
 #    - sqlclosecheck
 #    - structcheck

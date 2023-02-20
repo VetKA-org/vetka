@@ -18,7 +18,7 @@ type Patient struct {
 	Name         string     `json:"name"`
 	SpeciesID    uuid.UUID  `json:"species_id"`
 	Gender       Gender     `json:"gender"`
-	Breed        *string    `json:"breed"`
+	Breed        string     `json:"breed"`
 	Birth        time.Time  `json:"birth"`
 	Aggressive   bool       `json:"aggressive"`
 	VaccinatedAt *time.Time `json:"vaccinated_at"`

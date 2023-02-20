@@ -10,6 +10,7 @@ import (
 	"github.com/VetKA-org/vetka/pkg/compression"
 	"github.com/VetKA-org/vetka/pkg/entity"
 	"github.com/VetKA-org/vetka/pkg/logger"
+	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +31,7 @@ func authenticatedAccess(log *logger.Logger, secret entity.Secret) gin.HandlerFu
 		rawToken = strings.TrimSpace(rawToken)
 
 		if rawToken == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse{"unauthorized"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, schema.ErrorResponse{Error: "unauthorized"})
 
 			return
 		}
@@ -41,7 +42,7 @@ func authenticatedAccess(log *logger.Logger, secret entity.Secret) gin.HandlerFu
 				Str("path", c.Request.URL.Path).
 				Err(err).
 				Msg("authenticatedAccess - entity.DecodeToken")
-			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse{"unauthorized"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, schema.ErrorResponse{Error: "unauthorized"})
 
 			return
 		}
@@ -71,7 +72,7 @@ func authorizedAccess(log *logger.Logger, allowedRoles []string) gin.HandlerFunc
 			}
 		}
 
-		c.AbortWithStatusJSON(http.StatusForbidden, errorResponse{"forbidden"})
+		c.AbortWithStatusJSON(http.StatusForbidden, schema.ErrorResponse{Error: "forbidden"})
 	}
 }
 

@@ -31,5 +31,5 @@ func (r *speciesRoutes) doList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, schema.DataResponse{Data: species})
+	c.JSON(http.StatusOK, schema.ListSpeciesResponse{Data: species})
 }

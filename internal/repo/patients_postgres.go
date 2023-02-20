@@ -73,6 +73,10 @@ func (r *PatientsRepo) Register(
 			return entity.ErrPatientExists
 		}
 
+		if postgres.IsForeignKeyViolation(err, "patients_species_id_fkey") {
+			return entity.ErrSpeciesNotFound
+		}
+
 		return fmt.Errorf("PatientsRepo - Register - tx.Tx.Exec: %w", err)
 	}
 
