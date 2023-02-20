@@ -12,12 +12,11 @@ import (
 )
 
 type usersRoutes struct {
-	log          *logger.Logger
 	usersUseCase usecase.Users
 }
 
 func newUsersRoutes(handler *gin.RouterGroup, log *logger.Logger, users usecase.Users) {
-	r := &usersRoutes{log, users}
+	r := &usersRoutes{users}
 
 	h := handler.Group("/users")
 	h.Use(authorizedAccess(log, []string{entity.HeadDoctor}))

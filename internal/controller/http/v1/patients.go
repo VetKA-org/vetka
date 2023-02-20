@@ -14,7 +14,6 @@ import (
 )
 
 type patientsRoutes struct {
-	log             *logger.Logger
 	patientsUseCase usecase.Patients
 }
 
@@ -32,7 +31,7 @@ type doRegisterPatientRequest struct {
 }
 
 func newPatientsRoutes(handler *gin.RouterGroup, log *logger.Logger, patients usecase.Patients) {
-	r := &patientsRoutes{log, patients}
+	r := &patientsRoutes{patients}
 
 	h := handler.Group("/patients")
 	h.Use(authorizedAccess(log, []string{entity.Administrator, entity.Doctor, entity.HeadDoctor}))

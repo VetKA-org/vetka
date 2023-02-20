@@ -6,18 +6,16 @@ import (
 
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/entity"
-	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 )
 
 type authRoutes struct {
-	log         *logger.Logger
 	authUseCase usecase.Auth
 }
 
-func newAuthRoutes(handler *gin.RouterGroup, log *logger.Logger, auth usecase.Auth) {
-	r := &authRoutes{log, auth}
+func newAuthRoutes(handler *gin.RouterGroup, auth usecase.Auth) {
+	r := &authRoutes{auth}
 
 	h := handler.Group("/")
 	{

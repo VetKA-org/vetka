@@ -4,18 +4,16 @@ import (
 	"net/http"
 
 	"github.com/VetKA-org/vetka/internal/usecase"
-	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 )
 
 type rolesRoutes struct {
-	log          *logger.Logger
 	rolesUseCase usecase.Roles
 }
 
-func newRolesRoutes(handler *gin.RouterGroup, log *logger.Logger, roles usecase.Roles) {
-	r := &rolesRoutes{log, roles}
+func newRolesRoutes(handler *gin.RouterGroup, roles usecase.Roles) {
+	r := &rolesRoutes{roles}
 
 	h := handler.Group("/roles")
 	{

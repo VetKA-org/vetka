@@ -25,11 +25,11 @@ func NewRouter(
 	h := handler.Group("/api/v1")
 	{
 		newAppointmentsRoutes(h, log, useCases.Appointments)
-		newAuthRoutes(h, log, useCases.Auth)
+		newAuthRoutes(h, useCases.Auth)
 		newPatientsRoutes(h, log, useCases.Patients)
 		newQueueRoutes(h, log, useCases.Queue)
-		newRolesRoutes(h, log, useCases.Roles)
-		newSpeciesRoutes(h, log, useCases.Species)
+		newRolesRoutes(h, useCases.Roles)
+		newSpeciesRoutes(h, useCases.Species)
 		newUsersRoutes(h, log, useCases.Users)
 	}
 }

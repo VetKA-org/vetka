@@ -13,7 +13,6 @@ import (
 )
 
 type appointmentsRoutes struct {
-	log                 *logger.Logger
 	appointmentsUseCase usecase.Appointments
 }
 
@@ -34,7 +33,7 @@ func newAppointmentsRoutes(
 	log *logger.Logger,
 	appointments usecase.Appointments,
 ) {
-	r := &appointmentsRoutes{log, appointments}
+	r := &appointmentsRoutes{appointments}
 
 	h := handler.Group("/appointments")
 	h.Use(authorizedAccess(log, []string{entity.Administrator, entity.Doctor, entity.HeadDoctor}))

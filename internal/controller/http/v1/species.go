@@ -4,18 +4,16 @@ import (
 	"net/http"
 
 	"github.com/VetKA-org/vetka/internal/usecase"
-	"github.com/VetKA-org/vetka/pkg/logger"
 	"github.com/VetKA-org/vetka/pkg/schema"
 	"github.com/gin-gonic/gin"
 )
 
 type speciesRoutes struct {
-	log            *logger.Logger
 	speciesUseCase usecase.Species
 }
 
-func newSpeciesRoutes(handler *gin.RouterGroup, log *logger.Logger, species usecase.Species) {
-	r := &speciesRoutes{log, species}
+func newSpeciesRoutes(handler *gin.RouterGroup, species usecase.Species) {
+	r := &speciesRoutes{species}
 
 	h := handler.Group("/species")
 	{

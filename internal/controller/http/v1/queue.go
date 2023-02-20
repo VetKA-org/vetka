@@ -12,12 +12,11 @@ import (
 )
 
 type queueRoutes struct {
-	log          *logger.Logger
 	queueUseCase usecase.Queue
 }
 
 func newQueueRoutes(handler *gin.RouterGroup, log *logger.Logger, queue usecase.Queue) {
-	r := &queueRoutes{log, queue}
+	r := &queueRoutes{queue}
 
 	h := handler.Group("/queue")
 	h.Use(authorizedAccess(log, []string{entity.Administrator, entity.Doctor, entity.HeadDoctor}))
