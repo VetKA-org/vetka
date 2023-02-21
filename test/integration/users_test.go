@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/VetKA-org/vetka/pkg/schema"
@@ -67,7 +68,7 @@ func (ts *UsersTestSuite) TestRegisterUserWithBadLogin() {
 	headers := map[string]string{"Authorization": ts.token}
 
 	req := newRegisterUserRequest()
-	req.Login = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" //nolint:lll //test data
+	req.Login = strings.Repeat("a", 129)
 
 	opts := grequests.RequestOptions{Headers: headers, JSON: req}
 
@@ -88,7 +89,7 @@ func (ts *UsersTestSuite) TestRegisterUserWithUnknownRole() {
 	opts := grequests.RequestOptions{Headers: headers, JSON: req}
 
 	resp := doPostReq(ts.T(), "api/v1/users", &opts)
-	require.Equal(ts.T(), http.StatusBadRequest, resp.StatusCode)
+	require.Equal(ts.T(), http.StatusNotFound, resp.StatusCode)
 }
 
 func (ts *UsersTestSuite) TestRegisterUserIfUserExists() {

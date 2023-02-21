@@ -55,7 +55,7 @@ func (r *usersRoutes) doRegister(c *gin.Context) {
 		}
 
 		if errors.Is(err, entity.ErrRoleNotFound) {
-			writeErrorResponse(c, http.StatusBadRequest, entity.ErrRoleNotFound)
+			writeErrorResponse(c, http.StatusNotFound, entity.ErrRoleNotFound)
 
 			return
 		}
