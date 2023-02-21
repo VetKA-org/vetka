@@ -58,3 +58,14 @@ func DecodeToken(rawToken string, secret Secret) (*DecodedToken, error) {
 
 	return claims, nil
 }
+
+// Decode token without verification.
+// (!) Warning: shouldn't be used unless we 100% sure that token is valid and signed by our service.
+func DecodeTokenUnverified(rawToken string) (*DecodedToken, error) {
+	claims := new(DecodedToken)
+	if _, _, err := new(jwt.Parser).ParseUnverified(rawToken, claims); err != nil {
+		return nil, err
+	}
+
+	return claims, nil
+}
