@@ -71,3 +71,7 @@ func TestUsers(t *testing.T) {
 func TestPatients(t *testing.T) {
 	suite.Run(t, new(PatientsTestSuite))
 }
+
+func TestAppointments(t *testing.T) {
+	suite.Run(t, new(AppointmentsTestSuite))
+}

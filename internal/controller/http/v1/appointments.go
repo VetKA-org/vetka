@@ -1,8 +1,8 @@
 package v1
 
 import (
+	"errors"
 	"net/http"
-	"time"
 
 	"github.com/VetKA-org/vetka/internal/usecase"
 	"github.com/VetKA-org/vetka/pkg/entity"
@@ -14,18 +14,6 @@ import (
 
 type appointmentsRoutes struct {
 	appointmentsUseCase usecase.Appointments
-}
-
-type doCreateAppointmentRequest struct {
-	PatientID    uuid.UUID `json:"patient_id" binding:"required"`
-	AssigneeID   uuid.UUID `json:"assignee_id" binding:"required"`
-	ScheduledFor time.Time `json:"scheduled_for" time_utc:"1" binding:"required"`
-	Reason       string    `json:"reason" binding:"required,max=255"`
-	Details      *string   `json:"details"`
-}
-
-type doUpdateAppointmentRequest struct {
-	Status entity.ApptStatus `json:"status" binding:"required,oneof=scheduled opened closed canceled"`
 }
 
 func newAppointmentsRoutes(
@@ -65,11 +53,11 @@ func (r *appointmentsRoutes) doList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, schema.DataResponse{Data: appointments})
+	c.JSON(http.StatusOK, schema.ListAppointmentsResponse{Data: appointments})
 }
 
 func (r *appointmentsRoutes) doCreate(c *gin.Context) {
-	var req doCreateAppointmentRequest
+	var req schema.CreateAppointmentRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		writeBindErrorResponse(c, err)
@@ -86,6 +74,12 @@ func (r *appointmentsRoutes) doCreate(c *gin.Context) {
 		req.Details,
 	)
 	if err != nil {
+		if errors.Is(err, entity.ErrPatientNotFound) {
+			writeErrorResponse(c, http.StatusNotFound, entity.ErrPatientNotFound)
+
+			return
+		}
+
 		writeErrorResponse(c, http.StatusInternalServerError, err)
 
 		return
@@ -95,7 +89,7 @@ func (r *appointmentsRoutes) doCreate(c *gin.Context) {
 }
 
 func (r *appointmentsRoutes) doUpdate(c *gin.Context) {
-	var req doUpdateAppointmentRequest
+	var req schema.UpdateAppointmentRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		writeBindErrorResponse(c, err)

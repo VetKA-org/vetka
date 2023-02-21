@@ -62,6 +62,10 @@ func (r *AppointmentsRepo) Create(
 		reason,
 		details,
 	); err != nil {
+		if postgres.IsForeignKeyViolation(err, "appointments_patient_id_fkey") {
+			return entity.ErrPatientNotFound
+		}
+
 		return fmt.Errorf("AppointmentsRepo - Create - tx.Tx.Exec: %w", err)
 	}
 
