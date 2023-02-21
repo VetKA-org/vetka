@@ -46,7 +46,7 @@ func (r *patientsRoutes) doRegister(c *gin.Context) {
 		return
 	}
 
-	err := r.patientsUseCase.Register(
+	patientID, err := r.patientsUseCase.Register(
 		c.Request.Context(),
 		req.Name,
 		req.SpeciesID,
@@ -57,23 +57,23 @@ func (r *patientsRoutes) doRegister(c *gin.Context) {
 		req.VaccinatedAt,
 		req.SterilizedAt,
 	)
-	if err != nil {
-		if errors.Is(err, entity.ErrPatientExists) {
-			writeErrorResponse(c, http.StatusConflict, entity.ErrPatientExists)
-
-			return
-		}
-
-		if errors.Is(err, entity.ErrSpeciesNotFound) {
-			writeErrorResponse(c, http.StatusBadRequest, entity.ErrSpeciesNotFound)
-
-			return
-		}
-
-		writeErrorResponse(c, http.StatusInternalServerError, err)
+	if err == nil {
+		c.JSON(http.StatusOK, schema.RegisterPatientResponse{ID: patientID})
 
 		return
 	}
 
-	c.Status(http.StatusOK)
+	if errors.Is(err, entity.ErrPatientExists) {
+		writeErrorResponse(c, http.StatusConflict, entity.ErrPatientExists)
+
+		return
+	}
+
+	if errors.Is(err, entity.ErrSpeciesNotFound) {
+		writeErrorResponse(c, http.StatusNotFound, entity.ErrSpeciesNotFound)
+
+		return
+	}
+
+	writeErrorResponse(c, http.StatusInternalServerError, err)
 }

@@ -47,7 +47,7 @@ type Patients interface {
 		aggressive bool,
 		vaccinatedAt *time.Time,
 		sterilizedAt *time.Time,
-	) error
+	) (uuid.UUID, error)
 }
 
 type Users interface {

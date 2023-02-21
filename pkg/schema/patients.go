@@ -20,6 +20,10 @@ type RegisterPatientRequest struct {
 	SterilizedAt *time.Time `json:"sterilized_at" time_format:"2006-01-02" time_utc:"1" binding:"omitempty,gtefield=Birth"` //nolint:lll // tags
 }
 
+type RegisterPatientResponse struct {
+	ID uuid.UUID `json:"id"`
+}
+
 type ListPatientsResponse struct {
 	Data []entity.Patient `json:"data"`
 }

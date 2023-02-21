@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/VetKA-org/vetka/pkg/entity"
@@ -89,7 +90,7 @@ func (ts *PatientsTestSuite) TestRegisterPatientWithBadName() {
 	headers := map[string]string{"Authorization": ts.token}
 
 	req := newRegisterPatientReq(t, ts.token)
-	req.Name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	req.Name = strings.Repeat("a", 33)
 
 	opts := grequests.RequestOptions{Headers: headers, JSON: req}
 
@@ -123,7 +124,7 @@ func (ts *PatientsTestSuite) TestRegisterPatientWithBadBreed() {
 	headers := map[string]string{"Authorization": ts.token}
 
 	req := newRegisterPatientReq(t, ts.token)
-	req.Breed = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	req.Breed = strings.Repeat("a", 65)
 
 	opts := grequests.RequestOptions{Headers: headers, JSON: req}
 
@@ -180,7 +181,7 @@ func (ts *PatientsTestSuite) TestRegisterPatientWithUnknownSpecies() {
 	opts := grequests.RequestOptions{Headers: headers, JSON: req}
 
 	resp := doPostReq(t, "api/v1/patients", &opts)
-	require.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	require.Equal(t, http.StatusNotFound, resp.StatusCode)
 }
 
 func (ts *PatientsTestSuite) TestRegisterPatientWithMinimalInfo() {
@@ -195,11 +196,14 @@ func (ts *PatientsTestSuite) TestRegisterPatientWithMinimalInfo() {
 	resp := doPostReq(t, "api/v1/patients", &opts)
 	require.Equal(http.StatusOK, resp.StatusCode)
 
+	body := schema.RegisterPatientResponse{}
+	require.NoError(resp.JSON(&body))
+
 	var created *entity.Patient
 
 	patients := listPatients(t, ts.token)
 	for i := range patients.Data {
-		if patients.Data[i].Name == req.Name {
+		if patients.Data[i].ID == body.ID {
 			created = &patients.Data[i]
 
 			break
@@ -207,7 +211,6 @@ func (ts *PatientsTestSuite) TestRegisterPatientWithMinimalInfo() {
 	}
 
 	require.NotNil(created)
-	require.NotEqual(uuid.UUID{}, created.ID)
 	require.Equal(req.Name, created.Name)
 	require.Equal(req.SpeciesID, created.SpeciesID)
 	require.Equal(req.Gender, created.Gender)
@@ -233,11 +236,14 @@ func (ts *PatientsTestSuite) TestRegisterPatientWithFullInfo() {
 	resp := doPostReq(t, "api/v1/patients", &opts)
 	require.Equal(http.StatusOK, resp.StatusCode)
 
+	body := schema.RegisterPatientResponse{}
+	require.NoError(resp.JSON(&body))
+
 	var created *entity.Patient
 
 	patients := listPatients(t, ts.token)
 	for i := range patients.Data {
-		if patients.Data[i].Name == req.Name {
+		if patients.Data[i].ID == body.ID {
 			created = &patients.Data[i]
 
 			break
@@ -245,7 +251,6 @@ func (ts *PatientsTestSuite) TestRegisterPatientWithFullInfo() {
 	}
 
 	require.NotNil(created)
-	require.NotEqual(uuid.UUID{}, created.ID)
 	require.Equal(req.Name, created.Name)
 	require.Equal(req.SpeciesID, created.SpeciesID)
 	require.Equal(req.Gender, created.Gender)

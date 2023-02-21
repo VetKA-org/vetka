@@ -37,15 +37,15 @@ func (uc *PatientsUseCase) Register(
 	aggressive bool,
 	vaccinatedAt *time.Time,
 	sterilizedAt *time.Time,
-) error {
+) (uuid.UUID, error) {
 	tx, err := uc.patientsRepo.BeginTx(ctx)
 	if err != nil {
-		return fmt.Errorf("PatientsUseCase - Register - uc.patientsRepo.BeginTx: %w", err)
+		return uuid.UUID{}, fmt.Errorf("PatientsUseCase - Register - uc.patientsRepo.BeginTx: %w", err)
 	}
 
 	defer tx.Release()
 
-	if err := uc.patientsRepo.Register(
+	patientID, err := uc.patientsRepo.Register(
 		ctx,
 		tx,
 		name,
@@ -56,13 +56,14 @@ func (uc *PatientsUseCase) Register(
 		aggressive,
 		vaccinatedAt,
 		sterilizedAt,
-	); err != nil {
-		return fmt.Errorf("PatientsUseCase - Register - uc.patientsRepo.Register: %w", err)
+	)
+	if err != nil {
+		return uuid.UUID{}, fmt.Errorf("PatientsUseCase - Register - uc.patientsRepo.Register: %w", err)
 	}
 
 	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("PatientsUseCase - Register - tx.Commit: %w", err)
+		return uuid.UUID{}, fmt.Errorf("PatientsUseCase - Register - tx.Commit: %w", err)
 	}
 
-	return nil
+	return patientID, nil
 }

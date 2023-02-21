@@ -52,13 +52,16 @@ func (r *PatientsRepo) Register(
 	aggressive bool,
 	vaccinatedAt *time.Time,
 	sterilizedAt *time.Time,
-) error {
-	if _, err := tx.Tx.Exec(
+) (uuid.UUID, error) {
+	var id uuid.UUID
+
+	err := tx.Tx.QueryRow(
 		ctx,
 		`INSERT INTO patients
          (name, species_id, gender, breed, birth, aggressive, vaccinated_at, sterilized_at)
      VALUES
          ($1, $2, $3, $4, $5, $6, $7, $8)
+     RETURNING patient_id
     `,
 		name,
 		speciesID,
@@ -68,17 +71,18 @@ func (r *PatientsRepo) Register(
 		aggressive,
 		vaccinatedAt,
 		sterilizedAt,
-	); err != nil {
+	).Scan(&id)
+	if err != nil {
 		if postgres.IsEntityExists(err) {
-			return entity.ErrPatientExists
+			return uuid.UUID{}, entity.ErrPatientExists
 		}
 
 		if postgres.IsForeignKeyViolation(err, "patients_species_id_fkey") {
-			return entity.ErrSpeciesNotFound
+			return uuid.UUID{}, entity.ErrSpeciesNotFound
 		}
 
-		return fmt.Errorf("PatientsRepo - Register - tx.Tx.Exec: %w", err)
+		return uuid.UUID{}, fmt.Errorf("PatientsRepo - Register - tx.Tx.QueryRow.Scan: %w", err)
 	}
 
-	return nil
+	return id, nil
 }
